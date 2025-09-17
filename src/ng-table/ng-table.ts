@@ -151,10 +151,29 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
         container.addEventListener('scroll', this.scrollSyncHandler);
       }
     });
+
+    // Sync header and body widths when data or columns change
+    effect(() => {
+      // Track dependencies: data, columns, and configuration
+      this.data();
+      this.columns();
+      this.config();
+      
+      // Schedule width synchronization after DOM updates
+      requestAnimationFrame(() => {
+        this.updateColumnWidths();
+      });
+    });
   }
 
   ngOnInit(): void {
     this.setupResizeObserver();
+    
+    // Initial width synchronization with multiple attempts to ensure it works
+    setTimeout(() => this.updateColumnWidths(), 0);
+    setTimeout(() => this.updateColumnWidths(), 100);
+    setTimeout(() => this.updateColumnWidths(), 250);
+    setTimeout(() => this.updateColumnWidths(), 500);
   }
 
   ngOnDestroy(): void {
@@ -175,6 +194,21 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
         this.resizeObserver.observe(this.tableContainer.nativeElement);
       }
     }
+  }
+
+  /**
+   * Public method to force header-body width synchronization
+   * Useful when external factors affect table dimensions
+   */
+  refreshLayout(): void {
+    // Force immediate and repeated width updates
+    this.updateColumnWidths();
+    requestAnimationFrame(() => {
+      this.updateColumnWidths();
+    });
+    setTimeout(() => {
+      this.updateColumnWidths();
+    }, 100);
   }
 
   syncHorizontalScroll(event: Event): void {
@@ -212,8 +246,11 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
       container.style.overflowX = 'hidden';
     }
     
-    // Sync header and body widths
-    setTimeout(() => this.syncHeaderBodyWidths(), 0);
+    // Sync header and body widths with multiple attempts for robustness
+    this.syncHeaderBodyWidths();
+    setTimeout(() => this.syncHeaderBodyWidths(), 10);
+    setTimeout(() => this.syncHeaderBodyWidths(), 50);
+    setTimeout(() => this.syncHeaderBodyWidths(), 100);
   }
 
   private calculateTotalTableWidth(): number {
@@ -239,20 +276,71 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   }
 
   private syncHeaderBodyWidths(): void {
-    // Ensure header and body tables have exact same column widths
-    const headerSections = this.tableContainer?.nativeElement?.querySelectorAll('.ngt-header-section');
-    const bodySections = this.tableContainer?.nativeElement?.querySelectorAll('.ngt-body-section');
+    // Ensure header and body have exact same column widths
+    const container = this.tableContainer?.nativeElement;
+    if (!container) return;
+
+    // Force immediate layout calculation
+    requestAnimationFrame(() => {
+      this.doWidthSync(container);
+    });
+  }
+
+  private doWidthSync(container: HTMLElement): void {
+    // Get all sections and sync them
+    this.syncSection(container, 'ngt-frozen-left');
+    this.syncSection(container, 'ngt-scrollable');  
+    this.syncSection(container, 'ngt-frozen-right');
+  }
+
+  private syncSection(container: HTMLElement, sectionClass: string): void {
+    const headerSection = container.querySelector(`.ngt-header-section.${sectionClass}`);
+    const bodySection = container.querySelector(`.ngt-row-section.${sectionClass}`);
     
-    // Force width recalculation by temporarily removing fixed widths
-    headerSections?.forEach(section => {
-      const table = section.querySelector('.ngt-header-table') as HTMLElement;
-      if (table) {
-        table.style.tableLayout = 'auto';
-        setTimeout(() => {
-          table.style.tableLayout = 'fixed';
-        }, 0);
+    if (!headerSection || !bodySection) return;
+
+    // Get header and body cells
+    const headerCells = Array.from(headerSection.querySelectorAll('.ngt-header-cell')) as HTMLElement[];
+    const firstBodyRow = bodySection.querySelector('.ngt-row');
+    const bodyCells = Array.from(firstBodyRow?.querySelectorAll('.ngt-cell') || []) as HTMLElement[];
+
+    if (headerCells.length === 0 || bodyCells.length === 0 || headerCells.length !== bodyCells.length) {
+      return;
+    }
+
+    // Clear any existing width constraints first
+    headerCells.forEach(cell => {
+      cell.style.width = '';
+      cell.style.minWidth = '';
+      cell.style.maxWidth = '';
+    });
+
+    // Force layout recalculation
+    container.offsetHeight;
+
+    // Now measure and apply widths
+    const widths: number[] = [];
+    bodyCells.forEach((bodyCell, index) => {
+      const rect = bodyCell.getBoundingClientRect();
+      widths[index] = rect.width;
+    });
+
+    // Apply widths to header cells
+    headerCells.forEach((headerCell, index) => {
+      if (widths[index] && widths[index] > 0) {
+        const width = Math.floor(widths[index]);
+        headerCell.style.width = `${width}px`;
+        headerCell.style.minWidth = `${width}px`;
+        headerCell.style.maxWidth = `${width}px`;
       }
     });
+
+    // Ensure table uses fixed layout
+    const headerTable = headerSection.querySelector('.ngt-header-table') as HTMLElement;
+    if (headerTable) {
+      headerTable.style.tableLayout = 'fixed';
+      headerTable.style.width = '100%';
+    }
   }
 
   private updateFrozenColumnPositions(scrollLeft: number): void {
