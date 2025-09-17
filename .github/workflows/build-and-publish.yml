@@ -122,10 +122,17 @@ jobs:
     - name: Build sample app for GitHub Pages
       run: npm run build:sample:prod
       
+    - name: Verify build output
+      run: |
+        echo "Build output structure:"
+        ls -la dist/sample/
+        echo "Browser directory contents:"
+        ls -la dist/sample/browser/
+        echo "Index.html content:"
+        cat dist/sample/browser/index.html
+      
     - name: Setup Pages
-      uses: actions/configure-pages@v4
-      with:
-        enablement: true
+      uses: actions/configure-pages@v5
       
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
