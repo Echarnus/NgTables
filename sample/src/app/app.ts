@@ -438,6 +438,7 @@ export class App {
   enableMultiSelect = signal(false);
   constrainWidth = signal(false);
   makeFrozenColumnsVisible = signal(false);
+  useRowTemplate = signal(false);
 
   // Toggle methods for demo controls
   toggleExpandableRows(): void {
@@ -462,6 +463,10 @@ export class App {
 
   toggleFrozenColumns(): void {
     this.makeFrozenColumnsVisible.set(!this.makeFrozenColumnsVisible());
+  }
+
+  toggleRowTemplate(): void {
+    this.useRowTemplate.set(!this.useRowTemplate());
   }
 
   // Event handlers

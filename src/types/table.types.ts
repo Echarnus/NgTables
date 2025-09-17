@@ -101,3 +101,18 @@ export interface ExpandableRowContext<T = any> {
   /** Whether the row is expanded */
   expanded: boolean;
 }
+
+export interface RowContext<T = any> {
+  /** The row data */
+  $implicit: T;
+  /** The row index */
+  index: number;
+  /** The row ID */
+  rowId: string;
+  /** The current columns */
+  columns: ColumnDefinition<T>[];
+  /** Whether the row is selected */
+  selected: boolean;
+  /** Whether the row is hovered */
+  hovered: boolean;
+}

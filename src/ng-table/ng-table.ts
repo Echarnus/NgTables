@@ -25,7 +25,8 @@ import {
   RowExpandState, 
   RowSelectionState,
   TableEvents,
-  ExpandableRowContext 
+  ExpandableRowContext,
+  RowContext 
 } from '../types/table.types';
 import { 
   getNestedProperty, 
@@ -52,11 +53,13 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   // Template content children for customization
   @ContentChild('expandedRowTemplate', { static: false }) expandedRowTemplate?: TemplateRef<ExpandableRowContext<T>>;
   @ContentChild('cellTemplate', { static: false }) cellTemplate?: TemplateRef<any>;
+  @ContentChild('rowTemplate', { static: false }) rowTemplate?: TemplateRef<RowContext<T>>;
 
   // Inputs using the new signal-based approach
   data = input.required<T[]>();
   columns = input.required<ColumnDefinition<T>[]>();
   config = input<TableConfiguration>({});
+  useRowTemplate = input<boolean>(false);
   
   // Outputs using the new signal-based approach
   sortChange = output<SortState>();
@@ -401,6 +404,17 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
       index: index,
       rowId: rowId,
       expanded: this.isRowExpanded(rowId)
+    };
+  }
+
+  getRowContext(row: T, index: number, rowId: string): RowContext<T> {
+    return {
+      $implicit: row,
+      index: index,
+      rowId: rowId,
+      columns: this.columns(),
+      selected: this.isRowSelected(rowId),
+      hovered: this.isRowHovered(rowId)
     };
   }
 }

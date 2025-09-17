@@ -80,6 +80,13 @@
                    (change)="toggleFrozenColumns()">
             <span>Enhanced Frozen Column Demo</span>
           </label>
+          
+          <label class="control-item">
+            <input type="checkbox" 
+                   [checked]="useRowTemplate()"
+                   (change)="toggleRowTemplate()">
+            <span>Use Template-based Rows (NEW!)</span>
+          </label>
         </div>
       </div>
       
@@ -88,6 +95,7 @@
           [data]="users()"
           [columns]="columns()"
           [config]="tableConfig()"
+          [useRowTemplate]="useRowTemplate()"
           (sortChange)="onSort($event)"
           (rowExpand)="onRowExpand($event)"
           (selectionChange)="onSelectionChange($event)"
@@ -178,6 +186,40 @@
               </div>
             </div>
           </ng-template>
+          
+          <!-- Custom row template when enabled -->
+          <ng-template #rowTemplate let-user let-index="index" let-rowId="rowId" let-columns="columns" let-selected="selected" let-hovered="hovered">
+            <div class="custom-row-template" 
+                 [class.selected]="selected" 
+                 [class.hovered]="hovered">
+              <div class="template-row-header">
+                <span class="row-number">#{{index + 1}}</span>
+                <span class="user-name">{{user.firstName}} {{user.lastName}}</span>
+                <span class="row-status" [class]="'status-' + user.status">{{user.status}}</span>
+              </div>
+              <div class="template-row-content">
+                <div class="user-info">
+                  <div class="avatar-section">
+                    <div class="template-avatar">{{user.firstName.charAt(0)}}{{user.lastName.charAt(0)}}</div>
+                  </div>
+                  <div class="info-section">
+                    <div class="primary-info">
+                      <span class="company">{{user.company}}</span>
+                      <span class="role">{{user.role}}</span>
+                    </div>
+                    <div class="contact-info">
+                      <span class="email">📧 {{user.email}}</span>
+                      <span class="subscriptions">📊 {{user.subscriptions}} subscriptions</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="template-actions">
+                  <button class="template-btn" (click)="editUser(user); $event.stopPropagation()">Edit</button>
+                  <button class="template-btn" (click)="viewProfile(user); $event.stopPropagation()">Profile</button>
+                </div>
+              </div>
+            </div>
+          </ng-template>
         </ngt-table>
       </div>
     </section>
@@ -196,6 +238,9 @@
         </div>
         <div class="instruction-item">
           <strong>Template-based content:</strong> Expandable rows now use ng-template with full access to row data, index, and state
+        </div>
+        <div class="instruction-item">
+          <strong>Template-based rows:</strong> Toggle "Use Template-based Rows" to see custom row rendering with templates (NEW!)
         </div>
         <div class="instruction-item">
           <strong>Vertical scroll:</strong> Table now has 25 rows - scroll down to see all data
