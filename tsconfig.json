@@ -30,16 +30,16 @@
   "files": [],
   "references": [
     {
-      "path": "./projects/ng-tables/tsconfig.lib.json"
+      "path": "./src/tsconfig.lib.json"
     },
     {
-      "path": "./projects/ng-tables/tsconfig.spec.json"
+      "path": "./test/tsconfig.spec.json"
     },
     {
-      "path": "./projects/demo/tsconfig.app.json"
+      "path": "./sample/tsconfig.app.json"
     },
     {
-      "path": "./projects/demo/tsconfig.spec.json"
+      "path": "./sample/tsconfig.spec.json"
     }
   ]
 }
