@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NgTables } from './ng-tables';
+import { NgTables } from '../src/ng-tables';
 
 describe('NgTables', () => {
   let component: NgTables;
