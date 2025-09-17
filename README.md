@@ -104,20 +104,45 @@ ng serve demo
 
 Open http://localhost:4200 to view the interactive demo.
 
-## Research: Dual `<thead>` Approach
+## Research: Dual `<thead>` Approach Investigation
 
-During development, we investigated the use of two `<thead>` elements as seen in various table implementations. Our analysis found:
+During development, we conducted comprehensive research on dual `<thead>` patterns used in table implementations like MailChimp's tables. Our detailed analysis concluded that this approach is **not necessary** for NgTables.
 
-**Why Some Implementations Use Dual `<thead>`:**
-- Workaround for complex CSS styling limitations in older browsers
-- Separation of frozen and scrollable header sections
-- Better control over sticky positioning in complex layouts
+### Key Research Findings
 
-**Our Implementation:**
-- Uses CSS Flexbox and CSS Grid for modern browser support
-- Single semantic table structure with proper ARIA attributes
-- Better accessibility and standards compliance
-- Achieves the same visual and functional results with cleaner markup
+**Why Some Implementations Used Dual `<thead>`:**
+- Legacy workaround for older browsers lacking CSS Grid/Flexbox support
+- Compensation for poor `position: sticky` support in legacy browsers
+- Complex styling workarounds in jQuery-based table libraries
+- Historical constraints from Bootstrap 3 and earlier CSS frameworks
+
+**Problems with Dual `<thead>` Approach:**
+- ❌ Semantic ambiguity and potential accessibility issues
+- ❌ Inconsistent browser rendering behavior  
+- ❌ Complex DOM manipulation requirements
+- ❌ Limited flexibility for responsive designs
+- ❌ Maintenance complexity and debugging difficulties
+
+**Our Modern CSS Implementation:**
+- ✅ **CSS Flexbox Layout**: Clean separation of frozen and scrollable sections
+- ✅ **Native Sticky Headers**: `position: sticky` for modern browser support
+- ✅ **Semantic HTML Structure**: Proper table elements with ARIA attributes
+- ✅ **Superior Accessibility**: Clear structure for screen readers
+- ✅ **Performance Optimized**: Efficient CSS-based rendering
+- ✅ **Future-Proof**: Ready for CSS Container Queries and Grid enhancements
+
+### Implementation Comparison
+
+| Feature | Dual `<thead>` | NgTables CSS Approach |
+|---------|----------------|----------------------|
+| Browser Support | ⚠️ Universal but inconsistent | ✅ Modern (IE11+) |
+| Accessibility | ⚠️ Semantic ambiguity | ✅ Clear semantic structure |
+| Maintainability | ❌ Complex DOM structure | ✅ Clean separation of concerns |
+| Performance | ❌ Heavy DOM manipulation | ✅ Efficient CSS rendering |
+| Sticky Headers | ❌ Requires complex workarounds | ✅ Native CSS support |
+| Frozen Columns | ❌ Complex implementation | ✅ Clean Flexbox implementation |
+
+**Detailed Research:** See [dual-thead-research.md](docs/dual-thead-research.md) for comprehensive analysis, code examples, and technical comparison.
 
 ## Documentation
 
