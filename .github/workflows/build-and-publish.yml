@@ -28,11 +28,39 @@ jobs:
     - name: Install dependencies
       run: npm ci
       
+    - name: Verify dependencies
+      run: |
+        npm ls --depth=0
+        echo "Node version: $(node --version)"
+        echo "NPM version: $(npm --version)"
+      
     - name: Build library
       run: npm run build
       
+    - name: Verify library build
+      run: |
+        if [ ! -d "dist/ng-tables" ]; then
+          echo "Error: Library build failed - dist/ng-tables directory not found"
+          exit 1
+        fi
+        echo "Library build successful - dist directory contents:"
+        ls -la dist/ng-tables/
+      
+    - name: Verify test files
+      run: |
+        echo "Test files found:"
+        find test -name "*.spec.ts" -exec echo "  {}" \;
+        if [ $(find test -name "*.spec.ts" | wc -l) -eq 0 ]; then
+          echo "Error: No test files found in test directory"
+          exit 1
+        fi
+        echo "Test configuration:"
+        cat test/tsconfig.spec.json
+        echo "Angular test configuration:"
+        cat angular.json | grep -A 10 -B 2 '"test":'
+      
     - name: Run tests
-      run: npm run test:headless
+      run: npm run test:ci
       
     - name: Build sample app
       run: npm run build:sample
