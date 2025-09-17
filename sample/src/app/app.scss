@@ -131,6 +131,27 @@
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
+  
+  &.constrained-width {
+    max-width: 800px;
+    margin: 0 auto 20px;
+    border: 2px solid #007c89;
+    position: relative;
+    
+    &::before {
+      content: "Width constrained to 800px - scroll horizontally to see frozen columns";
+      position: absolute;
+      top: -30px;
+      left: 0;
+      background: #007c89;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      z-index: 10;
+    }
+  }
 }
 
 .demo-instructions {
@@ -240,4 +261,40 @@
   .instructions-grid {
     grid-template-columns: 1fr;
   }
+}
+
+// Constrained width demo styles
+.table-wrapper {
+  transition: max-width 0.3s ease;
+  
+  &.constrained-width {
+    max-width: 600px;
+    margin: 0 auto;
+    border: 2px solid #007c89;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    
+    &::before {
+      content: "Constrained to 600px - Notice horizontal scroll with frozen columns";
+      position: absolute;
+      top: -35px;
+      left: 0;
+      right: 0;
+      background: #007c89;
+      color: white;
+      text-align: center;
+      padding: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      z-index: 10;
+      border-radius: 4px 4px 0 0;
+    }
+  }
+}
+
+// Enhance the table container for demo
+ngt-table {
+  display: block;
+  width: 100%;
 }

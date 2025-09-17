@@ -330,7 +330,7 @@ export class App {
   ]);
 
   // Table columns configuration
-  columns = signal<ColumnDefinition<User>[]>([
+  columns = computed<ColumnDefinition<User>[]>(() => [
     {
       id: 'id',
       header: 'ID',
@@ -344,6 +344,7 @@ export class App {
       header: 'First Name',
       accessor: 'firstName',
       width: '150px',
+      frozen: this.makeFrozenColumnsVisible() ? 'left' : undefined,
       sortable: true
     },
     {
@@ -401,6 +402,7 @@ export class App {
       header: 'Last Login',
       accessor: 'lastLogin',
       width: '130px',
+      frozen: this.makeFrozenColumnsVisible() ? 'right' : undefined,
       sortable: true,
       cellRenderer: (value: string) => {
         return new Date(value).toLocaleDateString();
@@ -433,6 +435,8 @@ export class App {
   showExpandableRows = signal(true);
   enableSelection = signal(false);
   enableMultiSelect = signal(false);
+  constrainWidth = signal(false);
+  makeFrozenColumnsVisible = signal(false);
 
   // Toggle methods for demo controls
   toggleExpandableRows(): void {
@@ -449,6 +453,14 @@ export class App {
 
   toggleMultiSelect(): void {
     this.enableMultiSelect.set(!this.enableMultiSelect());
+  }
+
+  toggleWidthConstraint(): void {
+    this.constrainWidth.set(!this.constrainWidth());
+  }
+
+  toggleFrozenColumns(): void {
+    this.makeFrozenColumnsVisible.set(!this.makeFrozenColumnsVisible());
   }
 
   // Event handlers

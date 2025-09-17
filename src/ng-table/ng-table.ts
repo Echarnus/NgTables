@@ -43,6 +43,8 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   @ViewChild('tableContainer', { static: true }) tableContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('headerContainer', { static: true }) headerContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('bodyContainer', { static: true }) bodyContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('scrollableHeader', { static: false }) scrollableHeader?: ElementRef<HTMLDivElement>;
+  @ViewChild('scrollableBody', { static: false }) scrollableBody?: ElementRef<HTMLDivElement>;
 
   // Inputs using the new signal-based approach
   data = input.required<T[]>();
@@ -168,18 +170,90 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
     }
   }
 
-  private syncHorizontalScroll(event: Event): void {
+  syncHorizontalScroll(event: Event): void {
     const target = event.target as HTMLElement;
     const scrollLeft = target.scrollLeft;
     
-    if (this.headerContainer?.nativeElement) {
-      this.headerContainer.nativeElement.scrollLeft = scrollLeft;
+    // Sync the scrollable header if this event came from the body
+    if (this.scrollableHeader?.nativeElement && target !== this.scrollableHeader.nativeElement) {
+      this.scrollableHeader.nativeElement.scrollLeft = scrollLeft;
     }
+    
+    // Sync the scrollable body if this event came from the header
+    if (this.scrollableBody?.nativeElement && target !== this.scrollableBody.nativeElement) {
+      this.scrollableBody.nativeElement.scrollLeft = scrollLeft;
+    }
+    
+    // Update frozen column positions if needed
+    this.updateFrozenColumnPositions(scrollLeft);
   }
 
   private updateColumnWidths(): void {
-    // This method can be used to dynamically adjust column widths
-    // Implementation would depend on specific resize requirements
+    // Update column widths for responsive behavior
+    const container = this.tableContainer?.nativeElement;
+    if (!container) return;
+    
+    const containerWidth = container.clientWidth;
+    
+    // Calculate total required width for all columns
+    const totalRequiredWidth = this.calculateTotalTableWidth();
+    
+    // If container is smaller than required width, enable horizontal scrolling
+    if (totalRequiredWidth > containerWidth) {
+      container.style.overflowX = 'auto';
+    } else {
+      container.style.overflowX = 'hidden';
+    }
+    
+    // Sync header and body widths
+    setTimeout(() => this.syncHeaderBodyWidths(), 0);
+  }
+
+  private calculateTotalTableWidth(): number {
+    let totalWidth = 0;
+    
+    // Add selection column width
+    if (this.config().selectable && this.config().multiSelect) {
+      totalWidth += 48;
+    }
+    
+    // Add expand column width
+    if (this.config().expandableRows) {
+      totalWidth += 48;
+    }
+    
+    // Add all column widths
+    this.columns().forEach(column => {
+      const width = column.width ? parseInt(column.width.replace('px', '')) : 120;
+      totalWidth += width;
+    });
+    
+    return totalWidth;
+  }
+
+  private syncHeaderBodyWidths(): void {
+    // Ensure header and body tables have exact same column widths
+    const headerSections = this.tableContainer?.nativeElement?.querySelectorAll('.ngt-header-section');
+    const bodySections = this.tableContainer?.nativeElement?.querySelectorAll('.ngt-body-section');
+    
+    // Force width recalculation by temporarily removing fixed widths
+    headerSections?.forEach(section => {
+      const table = section.querySelector('.ngt-header-table') as HTMLElement;
+      if (table) {
+        table.style.tableLayout = 'auto';
+        setTimeout(() => {
+          table.style.tableLayout = 'fixed';
+        }, 0);
+      }
+    });
+  }
+
+  private updateFrozenColumnPositions(scrollLeft: number): void {
+    // Update right frozen columns position based on scroll
+    const rightFrozenElements = this.tableContainer?.nativeElement?.querySelectorAll('.ngt-frozen-right');
+    rightFrozenElements?.forEach((element) => {
+      (element as HTMLElement).style.transform = `translateX(-${scrollLeft}px)`;
+    });
   }
 
   onSort(column: ColumnDefinition<T>): void {

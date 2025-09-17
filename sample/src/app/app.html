@@ -66,10 +66,24 @@
                    (change)="toggleMultiSelect()">
             <span>Multi-Select (requires Row Selection)</span>
           </label>
+          
+          <label class="control-item">
+            <input type="checkbox" 
+                   [checked]="constrainWidth()"
+                   (change)="toggleWidthConstraint()">
+            <span>Constrain Width (shows horizontal scroll)</span>
+          </label>
+          
+          <label class="control-item">
+            <input type="checkbox" 
+                   [checked]="makeFrozenColumnsVisible()"
+                   (change)="toggleFrozenColumns()">
+            <span>Enhanced Frozen Column Demo</span>
+          </label>
         </div>
       </div>
       
-      <div class="table-wrapper">
+      <div class="table-wrapper" [class.constrained-width]="constrainWidth()">
         <ngt-table
           [data]="users()"
           [columns]="columns()"
@@ -116,10 +130,13 @@
           <strong>Vertical scroll:</strong> Table now has 25 rows - scroll down to see all data
         </div>
         <div class="instruction-item">
-          <strong>Horizontal scroll:</strong> Try resizing your browser to see frozen columns in action
+          <strong>Horizontal scroll:</strong> Enable "Constrain Width" to see frozen columns in action
         </div>
         <div class="instruction-item">
           <strong>Frozen columns:</strong> ID column stays on left, Subscriptions on right while scrolling
+        </div>
+        <div class="instruction-item">
+          <strong>Enhanced frozen demo:</strong> Toggle the enhanced demo to see additional frozen columns
         </div>
         <div class="instruction-item">
           <strong>Keyboard navigation:</strong> Use Tab, Enter, and Space keys to navigate and interact

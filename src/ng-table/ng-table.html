@@ -91,7 +91,9 @@
     }
 
     <!-- Scrollable Header -->
-    <div class="ngt-header-section ngt-scrollable">
+    <div class="ngt-header-section ngt-scrollable"
+         #scrollableHeader
+         (scroll)="syncHorizontalScroll($event)">
       <table class="ngt-header-table" role="presentation">
         <thead>
           <tr class="ngt-header-row" role="row">
@@ -268,7 +270,9 @@
           }
 
           <!-- Scrollable Cells -->
-          <div class="ngt-row-section ngt-scrollable">
+          <div class="ngt-row-section ngt-scrollable"
+               #scrollableBody
+               (scroll)="syncHorizontalScroll($event)">
             <div class="ngt-row"
                  [class.ngt-selected]="isRowSelected(rowId)"
                  [class.ngt-hovered]="isRowHovered(rowId)"
