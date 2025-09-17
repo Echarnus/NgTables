@@ -14,6 +14,8 @@
     "watch": "ng build ng-tables --watch --configuration development",
     "test": "ng test ng-tables",
     "test:headless": "ng test ng-tables --browsers=ChromeHeadlessCI --watch=false",
+    "test:ci": "npm run test:pre-check && npm run test:headless",
+    "test:pre-check": "echo 'Pre-test verification:' && echo 'Test files:' && find test -name '*.spec.ts' && echo 'Build artifacts:' && ls -la dist/ 2>/dev/null || echo 'No dist directory found'",
     "lint": "echo 'No linting configured'",
     "prepare": "npm run build"
   },
