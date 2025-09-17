@@ -30,6 +30,11 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
+            "main": "test/test.ts",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
             "tsConfig": "test/tsconfig.spec.json",
             "karmaConfig": "test/karma.conf.js"
           }
