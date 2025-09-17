@@ -137,6 +137,7 @@ $transition: all 0.15s ease-in-out;
   color: $text-color;
   background: $secondary-color;
   position: relative;
+  box-sizing: border-box; // Ensure consistent box model
   
   &:last-child {
     border-right: none;
@@ -153,6 +154,8 @@ $transition: all 0.15s ease-in-out;
   &.ngt-selection-header,
   &.ngt-expand-header {
     width: 48px;
+    min-width: 48px;
+    max-width: 48px;
     text-align: center;
   }
 }
@@ -267,6 +270,7 @@ $transition: all 0.15s ease-in-out;
   padding: 0 $cell-padding;
   border-right: 1px solid $border-color;
   min-height: $row-height;
+  flex-shrink: 0; // Prevent cells from shrinking
   
   &:last-child {
     border-right: none;
@@ -277,6 +281,7 @@ $transition: all 0.15s ease-in-out;
     width: 48px;
     justify-content: center;
     padding: 0;
+    flex: none; // Prevent flex resize
   }
   
   span {

@@ -151,10 +151,27 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
         container.addEventListener('scroll', this.scrollSyncHandler);
       }
     });
+
+    // Watch for data changes to trigger width synchronization
+    effect(() => {
+      // Trigger when data or columns change
+      this.data();
+      this.columns();
+      
+      // Sync widths after data/column changes
+      setTimeout(() => {
+        this.updateColumnWidths();
+      }, 0);
+    });
   }
 
   ngOnInit(): void {
     this.setupResizeObserver();
+    
+    // Ensure width sync happens after component initialization
+    setTimeout(() => {
+      this.updateColumnWidths();
+    }, 100);
   }
 
   ngOnDestroy(): void {
@@ -212,8 +229,12 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
       container.style.overflowX = 'hidden';
     }
     
-    // Sync header and body widths
-    setTimeout(() => this.syncHeaderBodyWidths(), 0);
+    // Sync header and body widths with improved timing
+    requestAnimationFrame(() => {
+      this.syncHeaderBodyWidths();
+      // Double-check alignment after DOM updates
+      setTimeout(() => this.syncHeaderBodyWidths(), 50);
+    });
   }
 
   private calculateTotalTableWidth(): number {
@@ -240,18 +261,71 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
 
   private syncHeaderBodyWidths(): void {
     // Ensure header and body tables have exact same column widths
-    const headerSections = this.tableContainer?.nativeElement?.querySelectorAll('.ngt-header-section');
-    const bodySections = this.tableContainer?.nativeElement?.querySelectorAll('.ngt-body-section');
+    const container = this.tableContainer?.nativeElement;
+    if (!container) return;
+
+    const headerCells = Array.from(container.querySelectorAll('.ngt-header-cell'));
+    const bodyRows = Array.from(container.querySelectorAll('.ngt-row-container .ngt-row'));
     
-    // Force width recalculation by temporarily removing fixed widths
-    headerSections?.forEach(section => {
-      const table = section.querySelector('.ngt-header-table') as HTMLElement;
-      if (table) {
-        table.style.tableLayout = 'auto';
-        setTimeout(() => {
-          table.style.tableLayout = 'fixed';
-        }, 0);
+    if (headerCells.length === 0 || bodyRows.length === 0) {
+      return;
+    }
+
+    // Get column configuration from the column definitions
+    const columns = [...this.leftFrozenColumns(), ...this.scrollableColumns(), ...this.rightFrozenColumns()];
+    
+    // Set fixed widths based on column definitions
+    headerCells.forEach((headerCell, index) => {
+      const column = columns[index];
+      if (!column) return;
+
+      const headerElement = headerCell as HTMLElement;
+      let targetWidth: string;
+
+      // Use predefined width if available, otherwise calculate from content
+      if (column.width) {
+        targetWidth = column.width;
+      } else {
+        // Calculate based on header content and apply some sensible defaults
+        const headerRect = headerElement.getBoundingClientRect();
+        targetWidth = `${Math.max(headerRect.width, 100)}px`;
       }
+
+      // Apply consistent styling to header
+      headerElement.style.width = targetWidth;
+      headerElement.style.minWidth = column.minWidth || targetWidth;
+      headerElement.style.maxWidth = column.maxWidth || targetWidth;
+      headerElement.style.flex = 'none';
+      headerElement.style.boxSizing = 'border-box';
+
+      // Apply same width to all body cells in this column
+      bodyRows.forEach(row => {
+        const cells = Array.from(row.querySelectorAll('.ngt-cell'));
+        const bodyCell = cells[index] as HTMLElement;
+        if (bodyCell) {
+          bodyCell.style.width = targetWidth;
+          bodyCell.style.minWidth = column.minWidth || targetWidth;
+          bodyCell.style.maxWidth = column.maxWidth || targetWidth;
+          bodyCell.style.flex = 'none';
+          bodyCell.style.boxSizing = 'border-box';
+        }
+      });
+    });
+
+    // Ensure tables use fixed layout for consistent rendering
+    const headerTables = container.querySelectorAll('.ngt-header-table');
+    headerTables.forEach((table) => {
+      const tableElement = table as HTMLElement;
+      tableElement.style.tableLayout = 'fixed';
+      tableElement.style.width = '100%';
+    });
+
+    // Force the row containers to not flex
+    const rowContainers = container.querySelectorAll('.ngt-row');
+    rowContainers.forEach((row) => {
+      const rowElement = row as HTMLElement;
+      rowElement.style.display = 'flex';
+      rowElement.style.flexWrap = 'nowrap';
     });
   }
 
