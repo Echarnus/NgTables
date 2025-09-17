@@ -91,6 +91,8 @@ $transition: all 0.15s ease-in-out;
     position: sticky;
     top: 0;
     z-index: 200;
+    // Ensure sticky header stays above content during scroll
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -113,8 +115,17 @@ $transition: all 0.15s ease-in-out;
   
   &.ngt-scrollable {
     flex: 1;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     min-width: 0;
+    
+    // Hide scrollbar for cleaner appearance
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 
@@ -122,6 +133,8 @@ $transition: all 0.15s ease-in-out;
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
+  // Ensure table takes full width
+  min-width: 100%;
 }
 
 .ngt-header-row {
@@ -137,6 +150,8 @@ $transition: all 0.15s ease-in-out;
   color: $text-color;
   background: $secondary-color;
   position: relative;
+  // Ensure consistent sizing
+  box-sizing: border-box;
   
   &:last-child {
     border-right: none;
@@ -153,6 +168,8 @@ $transition: all 0.15s ease-in-out;
   &.ngt-selection-header,
   &.ngt-expand-header {
     width: 48px;
+    min-width: 48px;
+    max-width: 48px;
     text-align: center;
   }
 }
@@ -201,10 +218,12 @@ $transition: all 0.15s ease-in-out;
 // Body container
 .ngt-body-container {
   position: relative;
+  // Ensure body scrolls properly with sticky header
+  max-height: calc(100vh - 200px); // Adjust based on your layout
+  overflow-y: auto;
   
   &.ngt-horizontal-scroll {
     overflow-x: auto;
-    overflow-y: visible;
   }
 }
 
@@ -238,7 +257,16 @@ $transition: all 0.15s ease-in-out;
   &.ngt-scrollable {
     flex: 1;
     min-width: 0;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    
+    // Hide scrollbar for cleaner appearance
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 
@@ -247,6 +275,8 @@ $transition: all 0.15s ease-in-out;
   min-height: $row-height;
   transition: $transition;
   cursor: pointer;
+  // Ensure consistent width calculation
+  width: 100%;
   
   &:hover,
   &.ngt-hovered {
@@ -267,6 +297,9 @@ $transition: all 0.15s ease-in-out;
   padding: 0 $cell-padding;
   border-right: 1px solid $border-color;
   min-height: $row-height;
+  // Ensure consistent sizing with headers
+  box-sizing: border-box;
+  flex-shrink: 0;
   
   &:last-child {
     border-right: none;
@@ -275,6 +308,8 @@ $transition: all 0.15s ease-in-out;
   &.ngt-selection-cell,
   &.ngt-expand-cell {
     width: 48px;
+    min-width: 48px;
+    max-width: 48px;
     justify-content: center;
     padding: 0;
   }

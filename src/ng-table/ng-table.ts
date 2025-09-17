@@ -5,6 +5,7 @@ import {
   EventEmitter, 
   OnInit, 
   OnDestroy, 
+  AfterViewInit,
   ElementRef, 
   ViewChild, 
   ChangeDetectionStrategy,
@@ -42,7 +43,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule]
 })
-export class NgTableComponent<T = any> implements OnInit, OnDestroy {
+export class NgTableComponent<T = any> implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('tableContainer', { static: true }) tableContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('headerContainer', { static: true }) headerContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('bodyContainer', { static: true }) bodyContainer!: ElementRef<HTMLDivElement>;
@@ -157,6 +158,14 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
     this.setupResizeObserver();
   }
 
+  ngAfterViewInit(): void {
+    // Ensure width synchronization after view is fully initialized
+    setTimeout(() => {
+      this.syncHeaderBodyWidths();
+      this.updateColumnWidths();
+    }, 100);
+  }
+
   ngOnDestroy(): void {
     this.resizeObserver?.disconnect();
     const container = this.bodyContainer?.nativeElement;
@@ -239,19 +248,49 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   }
 
   private syncHeaderBodyWidths(): void {
-    // Ensure header and body tables have exact same column widths
-    const headerSections = this.tableContainer?.nativeElement?.querySelectorAll('.ngt-header-section');
-    const bodySections = this.tableContainer?.nativeElement?.querySelectorAll('.ngt-body-section');
+    // Ensure header and body columns have exact same widths
+    const container = this.tableContainer?.nativeElement;
+    if (!container) return;
+
+    // Get all header cells and corresponding body cells
+    const leftFrozenHeaders = container.querySelectorAll('.ngt-frozen-left .ngt-header-cell');
+    const scrollableHeaders = container.querySelectorAll('.ngt-scrollable .ngt-header-cell');
+    const rightFrozenHeaders = container.querySelectorAll('.ngt-frozen-right .ngt-header-cell');
+
+    // Sync left frozen columns
+    this.syncSectionWidths(leftFrozenHeaders, '.ngt-frozen-left .ngt-cell');
     
-    // Force width recalculation by temporarily removing fixed widths
-    headerSections?.forEach(section => {
-      const table = section.querySelector('.ngt-header-table') as HTMLElement;
-      if (table) {
-        table.style.tableLayout = 'auto';
-        setTimeout(() => {
-          table.style.tableLayout = 'fixed';
-        }, 0);
-      }
+    // Sync scrollable columns
+    this.syncSectionWidths(scrollableHeaders, '.ngt-scrollable .ngt-cell');
+    
+    // Sync right frozen columns
+    this.syncSectionWidths(rightFrozenHeaders, '.ngt-frozen-right .ngt-cell');
+  }
+
+  private syncSectionWidths(headerCells: NodeListOf<Element>, bodyCellSelector: string): void {
+    const container = this.tableContainer?.nativeElement;
+    if (!container || !headerCells.length) return;
+
+    // Get the first row's cells to use as reference
+    const firstRow = container.querySelector('.ngt-row-container:first-child');
+    if (!firstRow) return;
+
+    const bodyCells = firstRow.querySelectorAll(bodyCellSelector);
+    
+    headerCells.forEach((headerCell, index) => {
+      const bodyCell = bodyCells[index] as HTMLElement;
+      if (!bodyCell) return;
+
+      // Get the computed width of the header cell
+      const headerWidth = (headerCell as HTMLElement).offsetWidth;
+      
+      // Apply the same width to all corresponding body cells in this column
+      const allBodyCells = container.querySelectorAll(`.ngt-row-container ${bodyCellSelector}:nth-child(${index + 1})`);
+      allBodyCells.forEach(cell => {
+        (cell as HTMLElement).style.width = `${headerWidth}px`;
+        (cell as HTMLElement).style.minWidth = `${headerWidth}px`;
+        (cell as HTMLElement).style.maxWidth = `${headerWidth}px`;
+      });
     });
   }
 
