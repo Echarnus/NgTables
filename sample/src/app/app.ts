@@ -25,7 +25,7 @@ interface User {
 export class App {
   protected readonly title = signal('NgTables - Advanced Table Component');
 
-  // Sample data
+  // Sample data - Extended dataset to demonstrate scrolling behavior
   users = signal<User[]>([
     {
       id: 1,
@@ -86,6 +86,246 @@ export class App {
       joinDate: '2023-06-18',
       lastLogin: '2024-09-17',
       subscriptions: 8
+    },
+    {
+      id: 6,
+      firstName: 'Diana',
+      lastName: 'Martinez',
+      email: 'diana.martinez@example.com',
+      company: 'Innovation Labs',
+      role: 'Manager',
+      status: 'active',
+      joinDate: '2023-02-14',
+      lastLogin: '2024-09-16',
+      subscriptions: 15
+    },
+    {
+      id: 7,
+      firstName: 'Edward',
+      lastName: 'Thompson',
+      email: 'edward.thompson@example.com',
+      company: 'Enterprise Solutions',
+      role: 'User',
+      status: 'active',
+      joinDate: '2023-04-03',
+      lastLogin: '2024-09-14',
+      subscriptions: 7
+    },
+    {
+      id: 8,
+      firstName: 'Fiona',
+      lastName: 'Garcia',
+      email: 'fiona.garcia@example.com',
+      company: 'Creative Studio',
+      role: 'Designer',
+      status: 'active',
+      joinDate: '2023-05-20',
+      lastLogin: '2024-09-13',
+      subscriptions: 9
+    },
+    {
+      id: 9,
+      firstName: 'George',
+      lastName: 'Lee',
+      email: 'george.lee@example.com',
+      company: 'DataCorp',
+      role: 'Analyst',
+      status: 'active',
+      joinDate: '2023-07-11',
+      lastLogin: '2024-09-12',
+      subscriptions: 4
+    },
+    {
+      id: 10,
+      firstName: 'Hannah',
+      lastName: 'White',
+      email: 'hannah.white@example.com',
+      company: 'TechFlow',
+      role: 'Developer',
+      status: 'active',
+      joinDate: '2023-08-25',
+      lastLogin: '2024-09-11',
+      subscriptions: 11
+    },
+    {
+      id: 11,
+      firstName: 'Ian',
+      lastName: 'Davis',
+      email: 'ian.davis@example.com',
+      company: 'MegaCorp Industries',
+      role: 'Senior Manager',
+      status: 'active',
+      joinDate: '2022-12-01',
+      lastLogin: '2024-09-10',
+      subscriptions: 20
+    },
+    {
+      id: 12,
+      firstName: 'Julia',
+      lastName: 'Anderson',
+      email: 'julia.anderson@example.com',
+      company: 'StartupHub',
+      role: 'Product Owner',
+      status: 'active',
+      joinDate: '2023-09-15',
+      lastLogin: '2024-09-09',
+      subscriptions: 6
+    },
+    {
+      id: 13,
+      firstName: 'Kevin',
+      lastName: 'Miller',
+      email: 'kevin.miller@example.com',
+      company: 'CloudTech Systems',
+      role: 'DevOps Engineer',
+      status: 'active',
+      joinDate: '2023-10-30',
+      lastLogin: '2024-09-08',
+      subscriptions: 13
+    },
+    {
+      id: 14,
+      firstName: 'Laura',
+      lastName: 'Wilson',
+      email: 'laura.wilson@example.com',
+      company: 'Future Innovations',
+      role: 'UX Designer',
+      status: 'pending',
+      joinDate: '2024-01-22',
+      lastLogin: '2024-09-07',
+      subscriptions: 2
+    },
+    {
+      id: 15,
+      firstName: 'Michael',
+      lastName: 'Moore',
+      email: 'michael.moore@example.com',
+      company: 'ScaleUp Ventures',
+      role: 'Business Analyst',
+      status: 'active',
+      joinDate: '2023-11-18',
+      lastLogin: '2024-09-06',
+      subscriptions: 8
+    },
+    {
+      id: 16,
+      firstName: 'Natalie',
+      lastName: 'Taylor',
+      email: 'natalie.taylor@example.com',
+      company: 'DigitalFirst Agency',
+      role: 'Marketing Manager',
+      status: 'active',
+      joinDate: '2023-12-05',
+      lastLogin: '2024-09-05',
+      subscriptions: 17
+    },
+    {
+      id: 17,
+      firstName: 'Oliver',
+      lastName: 'Jackson',
+      email: 'oliver.jackson@example.com',
+      company: 'NextGen Technologies',
+      role: 'Software Architect',
+      status: 'active',
+      joinDate: '2024-02-14',
+      lastLogin: '2024-09-04',
+      subscriptions: 14
+    },
+    {
+      id: 18,
+      firstName: 'Patricia',
+      lastName: 'Thomas',
+      email: 'patricia.thomas@example.com',
+      company: 'EliteConsulting Group',
+      role: 'Senior Consultant',
+      status: 'active',
+      joinDate: '2024-03-08',
+      lastLogin: '2024-09-03',
+      subscriptions: 19
+    },
+    {
+      id: 19,
+      firstName: 'Quincy',
+      lastName: 'Robinson',
+      email: 'quincy.robinson@example.com',
+      company: 'AgileDev Studios',
+      role: 'Scrum Master',
+      status: 'inactive',
+      joinDate: '2024-04-12',
+      lastLogin: '2024-08-15',
+      subscriptions: 1
+    },
+    {
+      id: 20,
+      firstName: 'Rachel',
+      lastName: 'Clark',
+      email: 'rachel.clark@example.com',
+      company: 'InnovateNow Corporation',
+      role: 'Chief Technology Officer',
+      status: 'active',
+      joinDate: '2024-05-20',
+      lastLogin: '2024-09-02',
+      subscriptions: 25
+    },
+    {
+      id: 21,
+      firstName: 'Samuel',
+      lastName: 'Rodriguez',
+      email: 'samuel.rodriguez@example.com',
+      company: 'CloudFirst Solutions',
+      role: 'Platform Engineer',
+      status: 'active',
+      joinDate: '2024-06-10',
+      lastLogin: '2024-09-01',
+      subscriptions: 10
+    },
+    {
+      id: 22,
+      firstName: 'Tiffany',
+      lastName: 'Lewis',
+      email: 'tiffany.lewis@example.com',
+      company: 'DataDriven Analytics',
+      role: 'Data Scientist',
+      status: 'active',
+      joinDate: '2024-07-02',
+      lastLogin: '2024-08-31',
+      subscriptions: 12
+    },
+    {
+      id: 23,
+      firstName: 'Ulysses',
+      lastName: 'Walker',
+      email: 'ulysses.walker@example.com',
+      company: 'TechAdvantage Partners',
+      role: 'Infrastructure Manager',
+      status: 'active',
+      joinDate: '2024-08-15',
+      lastLogin: '2024-08-30',
+      subscriptions: 7
+    },
+    {
+      id: 24,
+      firstName: 'Victoria',
+      lastName: 'Hall',
+      email: 'victoria.hall@example.com',
+      company: 'ModernApp Development',
+      role: 'Frontend Developer',
+      status: 'pending',
+      joinDate: '2024-09-01',
+      lastLogin: '2024-08-29',
+      subscriptions: 3
+    },
+    {
+      id: 25,
+      firstName: 'William',
+      lastName: 'Allen',
+      email: 'william.allen@example.com',
+      company: 'FinTech Innovations Ltd',
+      role: 'Security Specialist',
+      status: 'active',
+      joinDate: '2024-09-10',
+      lastLogin: '2024-08-28',
+      subscriptions: 16
     }
   ]);
 
