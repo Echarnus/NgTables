@@ -34,17 +34,17 @@ The sample is automatically deployed to GitHub Pages at: [https://echarnus.githu
 This sample demonstrates how to integrate NgTables into your Angular application:
 
 ```typescript
-import { MailchimpTableComponent, ColumnDefinition, TableConfiguration } from 'ng-tables';
+import { NgTableComponent, ColumnDefinition, TableConfiguration } from 'ng-tables';
 
 @Component({
   template: `
-    <ngt-mailchimp-table
+    <ngt-table
       [data]="users()"
       [columns]="columns()"
       [config]="config()"
       (sortChange)="onSort($event)"
       (selectionChange)="onSelectionChange($event)">
-    </ngt-mailchimp-table>
+    </ngt-table>
   `
 })
 export class MyComponent {

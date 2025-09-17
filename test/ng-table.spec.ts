@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 
-import { MailchimpTableComponent } from './mailchimp-table';
-import { ColumnDefinition } from '../types/table.types';
+import { NgTableComponent } from '../src/ng-table/ng-table';
+import { ColumnDefinition } from '../src/types/table.types';
 
-describe('MailchimpTableComponent', () => {
-  let component: MailchimpTableComponent;
-  let fixture: ComponentFixture<MailchimpTableComponent>;
+describe('NgTableComponent', () => {
+  let component: NgTableComponent;
+  let fixture: ComponentFixture<NgTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MailchimpTableComponent]
+      imports: [NgTableComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MailchimpTableComponent);
+    fixture = TestBed.createComponent(NgTableComponent);
     component = fixture.componentInstance;
   });
 

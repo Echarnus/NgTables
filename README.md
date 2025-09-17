@@ -1,6 +1,6 @@
-# NgTables - MailChimp-Inspired Table Component
+# NgTables - Advanced Table Component
 
-A comprehensive Angular table component inspired by MailChimp's design with advanced features including frozen columns, expandable rows, sorting, and full accessibility support.
+A comprehensive Angular table component with advanced features including frozen columns, expandable rows, sorting, and full accessibility support.
 
 ![NgTables Demo](docs/assets/mailchimp-table-demo.png)
 
@@ -40,7 +40,7 @@ npm install ng-tables
 
 ```typescript
 import { Component, signal } from '@angular/core';
-import { MailchimpTableComponent, ColumnDefinition, TableConfiguration } from 'ng-tables';
+import { NgTableComponent, ColumnDefinition, TableConfiguration } from 'ng-tables';
 
 interface User {
   id: number;
@@ -51,15 +51,15 @@ interface User {
 
 @Component({
   selector: 'app-users',
-  imports: [MailchimpTableComponent],
+  imports: [NgTableComponent],
   template: `
-    <ngt-mailchimp-table
+    <ngt-table
       [data]="users()"
       [columns]="columns()"
       [config]="config()"
       (sortChange)="onSort($event)"
       (selectionChange)="onSelectionChange($event)">
-    </ngt-mailchimp-table>
+    </ngt-table>
   `
 })
 export class UsersComponent {
@@ -106,9 +106,9 @@ Open http://localhost:4200 to view the interactive demo.
 
 ## Research: Dual `<thead>` Approach
 
-After researching MailChimp's implementation, we investigated the use of two `<thead>` elements. Our analysis found:
+During development, we investigated the use of two `<thead>` elements as seen in various table implementations. Our analysis found:
 
-**Why MailChimp Uses Dual `<thead>`:**
+**Why Some Implementations Use Dual `<thead>`:**
 - Workaround for complex CSS styling limitations in older browsers
 - Separation of frozen and scrollable header sections
 - Better control over sticky positioning in complex layouts

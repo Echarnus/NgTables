@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   imports: [],
   template: `
     <p>
-      NgTables - MailChimp-inspired table component library for Angular
+      NgTables - Advanced table component library for Angular
     </p>
   `,
   styles: ``

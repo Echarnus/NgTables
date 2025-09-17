@@ -1,7 +1,7 @@
 {
   "name": "ng-tables",
   "version": "1.0.0",
-  "description": "MailChimp-inspired table component for Angular with frozen columns, expandable rows, and full accessibility support",
+  "description": "Advanced table component for Angular with frozen columns, expandable rows, and full accessibility support",
   "main": "dist/ng-tables/index.js",
   "module": "dist/ng-tables/fesm2022/ng-tables.mjs",
   "types": "dist/ng-tables/index.d.ts",
@@ -21,7 +21,7 @@
     "angular",
     "table",
     "component",
-    "mailchimp",
+    "data-table",
     "frozen-columns",
     "expandable-rows",
     "accessibility",

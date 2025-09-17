@@ -2,8 +2,8 @@
   <header class="demo-header">
     <h1>{{ title() }}</h1>
     <p class="demo-subtitle">
-      A comprehensive table component inspired by MailChimp's design with advanced features
-      including frozen columns, expandable rows, sorting, and accessibility support.
+      A comprehensive table component with advanced features including frozen columns, 
+      expandable rows, sorting, and accessibility support.
     </p>
   </header>
 
@@ -70,7 +70,7 @@
       </div>
       
       <div class="table-wrapper">
-        <ngt-mailchimp-table
+        <ngt-table
           [data]="users()"
           [columns]="columns()"
           [config]="tableConfig()"
@@ -96,7 +96,7 @@
               </div>
             </div>
           </div>
-        </ngt-mailchimp-table>
+        </ngt-table>
       </div>
     </section>
 

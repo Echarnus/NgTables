@@ -33,13 +33,13 @@ import {
 } from '../utils/table.utils';
 
 @Component({
-  selector: 'ngt-mailchimp-table',
-  templateUrl: './mailchimp-table.html',
-  styleUrl: './mailchimp-table.scss',
+  selector: 'ngt-table',
+  templateUrl: './ng-table.html',
+  styleUrl: './ng-table.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule]
 })
-export class MailchimpTableComponent<T = any> implements OnInit, OnDestroy {
+export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   @ViewChild('tableContainer', { static: true }) tableContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('headerContainer', { static: true }) headerContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('bodyContainer', { static: true }) bodyContainer!: ElementRef<HTMLDivElement>;

@@ -1,6 +1,6 @@
 import { Component, signal, computed } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MailchimpTableComponent } from '../../../src/public-api';
+import { NgTableComponent } from '../../../src/public-api';
 import { ColumnDefinition, TableConfiguration, SortState } from '../../../src/public-api';
 
 interface User {
@@ -18,12 +18,12 @@ interface User {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MailchimpTableComponent],
+  imports: [RouterOutlet, NgTableComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('NgTables - MailChimp-inspired Table Component');
+  protected readonly title = signal('NgTables - Advanced Table Component');
 
   // Sample data
   users = signal<User[]>([
