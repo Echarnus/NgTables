@@ -28,6 +28,12 @@ A comprehensive Angular table component with advanced features including frozen 
 - **🌙 Dark Mode Support**: Automatic adaptation to user preferences
 - **🔧 TypeScript First**: Full type safety and IntelliSense support
 
+## Requirements
+
+- **Node.js**: ^20.19.0 || ^22.12.0 || >=24.0.0
+- **npm**: ^6.11.0 || ^7.5.6 || >=8.0.0
+- **Angular**: 19.0.0+ or 20.0.0+
+
 ## Quick Start
 
 ### Installation
