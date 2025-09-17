@@ -169,10 +169,11 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.setupResizeObserver();
     
-    // Initial width synchronization after component initialization
-    setTimeout(() => {
-      this.updateColumnWidths();
-    }, 0);
+    // Initial width synchronization with multiple attempts to ensure it works
+    setTimeout(() => this.updateColumnWidths(), 0);
+    setTimeout(() => this.updateColumnWidths(), 100);
+    setTimeout(() => this.updateColumnWidths(), 250);
+    setTimeout(() => this.updateColumnWidths(), 500);
   }
 
   ngOnDestroy(): void {
@@ -200,7 +201,14 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
    * Useful when external factors affect table dimensions
    */
   refreshLayout(): void {
+    // Force immediate and repeated width updates
     this.updateColumnWidths();
+    requestAnimationFrame(() => {
+      this.updateColumnWidths();
+    });
+    setTimeout(() => {
+      this.updateColumnWidths();
+    }, 100);
   }
 
   syncHorizontalScroll(event: Event): void {
@@ -238,9 +246,9 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
       container.style.overflowX = 'hidden';
     }
     
-    // Sync header and body widths after DOM has been updated with multiple attempts
-    // to ensure it happens after the flexbox layout is complete
-    setTimeout(() => this.syncHeaderBodyWidths(), 0);
+    // Sync header and body widths with multiple attempts for robustness
+    this.syncHeaderBodyWidths();
+    setTimeout(() => this.syncHeaderBodyWidths(), 10);
     setTimeout(() => this.syncHeaderBodyWidths(), 50);
     setTimeout(() => this.syncHeaderBodyWidths(), 100);
   }
@@ -268,57 +276,70 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   }
 
   private syncHeaderBodyWidths(): void {
-    // Ensure header and body tables have exact same column widths
+    // Ensure header and body have exact same column widths
     const container = this.tableContainer?.nativeElement;
     if (!container) return;
 
-    // Get all header and body sections
-    const headerSections = container.querySelectorAll('.ngt-header-section');
-    const bodySections = container.querySelectorAll('.ngt-row-section');
-    
-    // Wait for DOM to be fully rendered before measuring
-    setTimeout(() => {
-      // Sync widths for each section type (frozen-left, scrollable, frozen-right)
-      this.syncSectionWidths(headerSections, bodySections, 'ngt-frozen-left');
-      this.syncSectionWidths(headerSections, bodySections, 'ngt-scrollable');
-      this.syncSectionWidths(headerSections, bodySections, 'ngt-frozen-right');
-    }, 10);
+    // Force immediate layout calculation
+    requestAnimationFrame(() => {
+      this.doWidthSync(container);
+    });
   }
 
-  private syncSectionWidths(headerSections: NodeListOf<Element>, bodySections: NodeListOf<Element>, sectionClass: string): void {
-    const headerSection = Array.from(headerSections).find(section => section.classList.contains(sectionClass));
-    const bodySection = Array.from(bodySections).find(section => section.classList.contains(sectionClass));
+  private doWidthSync(container: HTMLElement): void {
+    // Get all sections and sync them
+    this.syncSection(container, 'ngt-frozen-left');
+    this.syncSection(container, 'ngt-scrollable');  
+    this.syncSection(container, 'ngt-frozen-right');
+  }
+
+  private syncSection(container: HTMLElement, sectionClass: string): void {
+    const headerSection = container.querySelector(`.ngt-header-section.${sectionClass}`);
+    const bodySection = container.querySelector(`.ngt-row-section.${sectionClass}`);
     
     if (!headerSection || !bodySection) return;
 
-    const headerCells = headerSection.querySelectorAll('.ngt-header-cell');
+    // Get header and body cells
+    const headerCells = Array.from(headerSection.querySelectorAll('.ngt-header-cell')) as HTMLElement[];
     const firstBodyRow = bodySection.querySelector('.ngt-row');
-    const bodyCells = firstBodyRow?.querySelectorAll('.ngt-cell');
+    const bodyCells = Array.from(firstBodyRow?.querySelectorAll('.ngt-cell') || []) as HTMLElement[];
 
-    if (!bodyCells || headerCells.length !== bodyCells.length) return;
+    if (headerCells.length === 0 || bodyCells.length === 0 || headerCells.length !== bodyCells.length) {
+      return;
+    }
 
-    // Calculate actual widths from the first body row and apply to header
-    Array.from(bodyCells).forEach((bodyCell, index) => {
-      const headerCell = headerCells[index] as HTMLElement;
-      if (headerCell && bodyCell) {
-        const bodyRect = (bodyCell as HTMLElement).getBoundingClientRect();
-        const bodyWidth = bodyRect.width;
-        
-        // Apply the exact same width to header cell
-        headerCell.style.width = `${bodyWidth}px`;
-        headerCell.style.minWidth = `${bodyWidth}px`;
-        headerCell.style.maxWidth = `${bodyWidth}px`;
+    // Clear any existing width constraints first
+    headerCells.forEach(cell => {
+      cell.style.width = '';
+      cell.style.minWidth = '';
+      cell.style.maxWidth = '';
+    });
+
+    // Force layout recalculation
+    container.offsetHeight;
+
+    // Now measure and apply widths
+    const widths: number[] = [];
+    bodyCells.forEach((bodyCell, index) => {
+      const rect = bodyCell.getBoundingClientRect();
+      widths[index] = rect.width;
+    });
+
+    // Apply widths to header cells
+    headerCells.forEach((headerCell, index) => {
+      if (widths[index] && widths[index] > 0) {
+        const width = Math.floor(widths[index]);
+        headerCell.style.width = `${width}px`;
+        headerCell.style.minWidth = `${width}px`;
+        headerCell.style.maxWidth = `${width}px`;
       }
     });
 
-    // Force table layout recalculation
+    // Ensure table uses fixed layout
     const headerTable = headerSection.querySelector('.ngt-header-table') as HTMLElement;
     if (headerTable) {
-      headerTable.style.tableLayout = 'auto';
-      // Use setTimeout instead of requestAnimationFrame for more reliable behavior
-      setTimeout(() => {
-        headerTable.style.tableLayout = 'fixed';
-      }, 0);
+      headerTable.style.tableLayout = 'fixed';
+      headerTable.style.width = '100%';
     }
   }
 
