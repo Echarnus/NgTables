@@ -20,6 +20,10 @@ During the development of NgTables, we investigated various table implementation
 ![NgTables Enhanced Frozen Demo](assets/enhanced-frozen-demo.png)
 *Figure 2: Enhanced demonstration showing multiple frozen sections with First Name and Last Login columns*
 
+**Live Interactive Demo:**
+![NgTables Live Demo](https://github.com/user-attachments/assets/f953fdef-2f25-40bf-9e6e-ec46f9fa91ed)
+*Figure 3: Live demonstration interface showing configurable table features and modern CSS implementation*
+
 ### Architecture
 NgTables uses a modern CSS-based approach with the following structure:
 
