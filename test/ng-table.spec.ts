@@ -59,4 +59,75 @@ describe('NgTableComponent', () => {
       direction: 'asc'
     });
   });
+
+  it('should handle pagination correctly', () => {
+    const testData = Array.from({ length: 100 }, (_, i) => ({ id: i + 1, name: `Item ${i + 1}` }));
+    const testColumns: ColumnDefinition[] = [
+      { id: 'id', header: 'ID' },
+      { id: 'name', header: 'Name' }
+    ];
+    const testConfig = {
+      pagination: {
+        enabled: true,
+        pageSize: 25
+      }
+    };
+    
+    fixture.componentRef.setInput('data', testData);
+    fixture.componentRef.setInput('columns', testColumns);
+    fixture.componentRef.setInput('config', testConfig);
+    fixture.detectChanges();
+
+    expect(component.isPaginationEnabled()).toBe(true);
+    expect(component.paginationState().totalPages).toBe(4);
+    expect(component.paginatedData().length).toBe(25);
+    expect(component.paginatedData()[0]).toEqual({ id: 1, name: 'Item 1' });
+  });
+
+  it('should emit page change events', () => {
+    const testData = Array.from({ length: 100 }, (_, i) => ({ id: i + 1, name: `Item ${i + 1}` }));
+    const testColumns: ColumnDefinition[] = [
+      { id: 'id', header: 'ID' },
+      { id: 'name', header: 'Name' }
+    ];
+    const testConfig = {
+      pagination: {
+        enabled: true,
+        pageSize: 25
+      }
+    };
+    
+    fixture.componentRef.setInput('data', testData);
+    fixture.componentRef.setInput('columns', testColumns);
+    fixture.componentRef.setInput('config', testConfig);
+    fixture.detectChanges();
+
+    spyOn(component.pageChange, 'emit');
+    
+    const pageChangeEvent = {
+      page: 2,
+      pageSize: 25,
+      totalItems: 100,
+      previousPage: 1
+    };
+    
+    component.onPageChange(pageChangeEvent);
+    
+    expect(component.pageChange.emit).toHaveBeenCalledWith(pageChangeEvent);
+  });
+
+  it('should return all data when pagination is disabled', () => {
+    const testData = Array.from({ length: 100 }, (_, i) => ({ id: i + 1, name: `Item ${i + 1}` }));
+    const testColumns: ColumnDefinition[] = [
+      { id: 'id', header: 'ID' },
+      { id: 'name', header: 'Name' }
+    ];
+    
+    fixture.componentRef.setInput('data', testData);
+    fixture.componentRef.setInput('columns', testColumns);
+    fixture.detectChanges();
+
+    expect(component.isPaginationEnabled()).toBe(false);
+    expect(component.paginatedData().length).toBe(100);
+  });
 });
