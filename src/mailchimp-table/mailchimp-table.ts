@@ -110,7 +110,22 @@ export class MailchimpTableComponent<T = any> implements OnInit, OnDestroy {
     return Object.values(selected).some(Boolean);
   });
 
-  leftFrozenWidth = computed(() => calculateFrozenWidth(this.leftFrozenColumns(), 'left'));
+  leftFrozenWidth = computed(() => {
+    let width = calculateFrozenWidth(this.leftFrozenColumns(), 'left');
+    
+    // Add width for selection column (48px when enabled)
+    if (this.config().selectable && this.config().multiSelect) {
+      width += 48;
+    }
+    
+    // Add width for expand column (48px when enabled)
+    if (this.config().expandableRows) {
+      width += 48;
+    }
+    
+    return width;
+  });
+  
   rightFrozenWidth = computed(() => calculateFrozenWidth(this.rightFrozenColumns(), 'right'));
 
   private scrollSyncHandler = debounce((event: Event) => {

@@ -40,6 +40,35 @@
 
     <section class="demo-table">
       <h2>Interactive Table</h2>
+      
+      <!-- Configuration Controls -->
+      <div class="demo-controls">
+        <h3>Table Configuration</h3>
+        <div class="controls-grid">
+          <label class="control-item">
+            <input type="checkbox" 
+                   [checked]="showExpandableRows()"
+                   (change)="toggleExpandableRows()">
+            <span>Expandable Rows</span>
+          </label>
+          
+          <label class="control-item">
+            <input type="checkbox" 
+                   [checked]="enableSelection()"
+                   (change)="toggleSelection()">
+            <span>Row Selection</span>
+          </label>
+          
+          <label class="control-item">
+            <input type="checkbox" 
+                   [checked]="enableMultiSelect()"
+                   [disabled]="!enableSelection()"
+                   (change)="toggleMultiSelect()">
+            <span>Multi-Select (requires Row Selection)</span>
+          </label>
+        </div>
+      </div>
+      
       <div class="table-wrapper">
         <ngt-mailchimp-table
           [data]="users()"

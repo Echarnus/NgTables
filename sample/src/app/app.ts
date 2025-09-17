@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MailchimpTableComponent } from '../../../src/public-api';
 import { ColumnDefinition, TableConfiguration, SortState } from '../../../src/public-api';
@@ -179,15 +179,37 @@ export class App {
     }
   ]);
 
-  // Table configuration
-  tableConfig = signal<TableConfiguration>({
-    expandableRows: true,
-    selectable: true,
-    multiSelect: true,
+  // Table configuration - computed based on toggles
+  tableConfig = computed<TableConfiguration>(() => ({
+    expandableRows: this.showExpandableRows(),
+    selectable: this.enableSelection(),
+    multiSelect: this.enableSelection() && this.enableMultiSelect(), // Only enable multiSelect when selection is enabled
     stickyHeader: true,
     horizontalScroll: true,
     emptyMessage: 'No users found'
-  });
+  }));
+
+  // Configuration toggles for demo
+  showExpandableRows = signal(true);
+  enableSelection = signal(false);
+  enableMultiSelect = signal(false);
+
+  // Toggle methods for demo controls
+  toggleExpandableRows(): void {
+    this.showExpandableRows.set(!this.showExpandableRows());
+  }
+
+  toggleSelection(): void {
+    const newValue = !this.enableSelection();
+    this.enableSelection.set(newValue);
+    if (!newValue) {
+      this.enableMultiSelect.set(false); // Disable multi-select when selection is disabled
+    }
+  }
+
+  toggleMultiSelect(): void {
+    this.enableMultiSelect.set(!this.enableMultiSelect());
+  }
 
   // Event handlers
   onSort(sortState: SortState): void {

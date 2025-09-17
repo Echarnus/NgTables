@@ -25,20 +25,18 @@
           <thead>
             <!-- Primary Header Row -->
             <tr class="ngt-header-row" role="row">
-              <!-- Selection Column -->
-              @if (config().selectable) {
+              <!-- Selection Column for Multi-Select Only -->
+              @if (config().selectable && config().multiSelect) {
                 <th class="ngt-header-cell ngt-selection-header" 
                     role="columnheader"
                     scope="col">
-                  @if (config().multiSelect) {
-                    <input type="checkbox" 
-                           class="ngt-checkbox"
-                           [checked]="allSelected()"
-                           [indeterminate]="someSelected() && !allSelected()"
-                           (change)="onSelectAll($event.target?.checked || false)"
-                           [attr.aria-label]="allSelected() ? 'Deselect all rows' : 'Select all rows'"
-                           tabindex="0">
-                  }
+                  <input type="checkbox" 
+                         class="ngt-checkbox"
+                         [checked]="allSelected()"
+                         [indeterminate]="someSelected() && !allSelected()"
+                         (change)="onSelectAll($event.target?.checked || false)"
+                         [attr.aria-label]="allSelected() ? 'Deselect all rows' : 'Select all rows'"
+                         tabindex="0">
                 </th>
               }
               
@@ -205,7 +203,7 @@
         <!-- Main Row -->
         <div class="ngt-row-container">
           <!-- Frozen Left Cells -->
-          @if (leftFrozenColumns().length > 0 || config().selectable || config().expandableRows) {
+          @if (leftFrozenColumns().length > 0 || (config().selectable && config().multiSelect) || config().expandableRows) {
             <div class="ngt-row-section ngt-frozen-left" 
                  [style.width.px]="leftFrozenWidth()">
               <div class="ngt-row"
@@ -218,8 +216,8 @@
                    (mouseenter)="onRowHover(rowId)"
                    (mouseleave)="onRowHover(null)">
                 
-                <!-- Selection Cell -->
-                @if (config().selectable) {
+                <!-- Selection Cell for Multi-Select Only -->
+                @if (config().selectable && config().multiSelect) {
                   <div class="ngt-cell ngt-selection-cell" role="gridcell">
                     <input type="checkbox" 
                            class="ngt-checkbox"
