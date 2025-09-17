@@ -14,7 +14,9 @@ import {
   input,
   output,
   TemplateRef,
-  ContentChild
+  ContentChild,
+  ContentChildren,
+  QueryList
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { 
@@ -25,7 +27,8 @@ import {
   RowExpandState, 
   RowSelectionState,
   TableEvents,
-  ExpandableRowContext 
+  ExpandableRowContext,
+  ColumnTemplateContext
 } from '../types/table.types';
 import { 
   getNestedProperty, 
@@ -489,6 +492,16 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
       index: index,
       rowId: rowId,
       expanded: this.isRowExpanded(rowId)
+    };
+  }
+
+  getColumnTemplateContext(row: T, column: ColumnDefinition<T>, index: number, rowId: string): ColumnTemplateContext<T> {
+    return {
+      $implicit: this.getCellValue(row, column),
+      row: row,
+      column: column,
+      index: index,
+      rowId: rowId
     };
   }
 }

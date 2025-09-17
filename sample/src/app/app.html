@@ -80,6 +80,13 @@
                    (change)="toggleFrozenColumns()">
             <span>Enhanced Frozen Column Demo</span>
           </label>
+          
+          <label class="control-item">
+            <input type="checkbox" 
+                   [checked]="useRowTemplate()"
+                   (change)="toggleRowTemplate()">
+            <span>Use Template-based Rows (NEW!)</span>
+          </label>
         </div>
       </div>
       
@@ -178,6 +185,30 @@
               </div>
             </div>
           </ng-template>
+          
+          <!-- Single cell template that handles different column types -->
+          <ng-template #cellTemplate let-value let-row="row" let-column="column" let-index="index" let-rowId="rowId">
+            @if (column.id === 'firstName') {
+              <div class="user-name-cell">
+                <div class="name-avatar">{{row.firstName.charAt(0)}}{{row.lastName.charAt(0)}}</div>
+                <div class="name-info">
+                  <div class="full-name">{{row.firstName}} {{row.lastName}}</div>
+                  <div class="user-id">ID: {{row.id}}</div>
+                </div>
+              </div>
+            } @else if (column.id === 'status') {
+              <div class="status-cell">
+                <span class="status-badge" [class]="'status-' + value">{{value}}</span>
+                <div class="status-actions">
+                  <button class="action-btn" (click)="editUser(row); $event.stopPropagation()">✏️</button>
+                  <button class="action-btn" (click)="viewProfile(row); $event.stopPropagation()">👤</button>
+                </div>
+              </div>
+            } @else {
+              <!-- Fallback for other columns -->
+              <span>{{value}}</span>
+            }
+          </ng-template>
         </ngt-table>
       </div>
     </section>
@@ -196,6 +227,9 @@
         </div>
         <div class="instruction-item">
           <strong>Template-based content:</strong> Expandable rows now use ng-template with full access to row data, index, and state
+        </div>
+        <div class="instruction-item">
+          <strong>Template-based rows:</strong> Toggle "Use Template-based Rows" to see custom row rendering with templates (NEW!)
         </div>
         <div class="instruction-item">
           <strong>Vertical scroll:</strong> Table now has 25 rows - scroll down to see all data
