@@ -238,10 +238,11 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
       container.style.overflowX = 'hidden';
     }
     
-    // Sync header and body widths after DOM has been updated
-    requestAnimationFrame(() => {
-      this.syncHeaderBodyWidths();
-    });
+    // Sync header and body widths after DOM has been updated with multiple attempts
+    // to ensure it happens after the flexbox layout is complete
+    setTimeout(() => this.syncHeaderBodyWidths(), 0);
+    setTimeout(() => this.syncHeaderBodyWidths(), 50);
+    setTimeout(() => this.syncHeaderBodyWidths(), 100);
   }
 
   private calculateTotalTableWidth(): number {
@@ -275,10 +276,13 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
     const headerSections = container.querySelectorAll('.ngt-header-section');
     const bodySections = container.querySelectorAll('.ngt-row-section');
     
-    // Sync widths for each section type (frozen-left, scrollable, frozen-right)
-    this.syncSectionWidths(headerSections, bodySections, 'ngt-frozen-left');
-    this.syncSectionWidths(headerSections, bodySections, 'ngt-scrollable');
-    this.syncSectionWidths(headerSections, bodySections, 'ngt-frozen-right');
+    // Wait for DOM to be fully rendered before measuring
+    setTimeout(() => {
+      // Sync widths for each section type (frozen-left, scrollable, frozen-right)
+      this.syncSectionWidths(headerSections, bodySections, 'ngt-frozen-left');
+      this.syncSectionWidths(headerSections, bodySections, 'ngt-scrollable');
+      this.syncSectionWidths(headerSections, bodySections, 'ngt-frozen-right');
+    }, 10);
   }
 
   private syncSectionWidths(headerSections: NodeListOf<Element>, bodySections: NodeListOf<Element>, sectionClass: string): void {
@@ -297,7 +301,10 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
     Array.from(bodyCells).forEach((bodyCell, index) => {
       const headerCell = headerCells[index] as HTMLElement;
       if (headerCell && bodyCell) {
-        const bodyWidth = (bodyCell as HTMLElement).getBoundingClientRect().width;
+        const bodyRect = (bodyCell as HTMLElement).getBoundingClientRect();
+        const bodyWidth = bodyRect.width;
+        
+        // Apply the exact same width to header cell
         headerCell.style.width = `${bodyWidth}px`;
         headerCell.style.minWidth = `${bodyWidth}px`;
         headerCell.style.maxWidth = `${bodyWidth}px`;
@@ -308,9 +315,10 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
     const headerTable = headerSection.querySelector('.ngt-header-table') as HTMLElement;
     if (headerTable) {
       headerTable.style.tableLayout = 'auto';
-      requestAnimationFrame(() => {
+      // Use setTimeout instead of requestAnimationFrame for more reliable behavior
+      setTimeout(() => {
         headerTable.style.tableLayout = 'fixed';
-      });
+      }, 0);
     }
   }
 
