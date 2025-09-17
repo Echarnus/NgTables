@@ -1,0 +1,483 @@
+// NgTables Component Styles
+// Modern table component with accessibility focus
+
+// Variables
+$primary-color: #007c89;
+$secondary-color: #f4f4f4;
+$border-color: #e1e5e9;
+$text-color: #241c15;
+$text-muted: #86888a;
+$hover-color: #f8f9fa;
+$selected-color: #e6f7ff;
+$focus-color: #4d90fe;
+$shadow-color: rgba(0, 0, 0, 0.1);
+
+$header-height: 48px;
+$row-height: 40px;
+$cell-padding: 12px;
+$border-radius: 4px;
+$transition: all 0.15s ease-in-out;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+}
+
+@mixin focus-outline {
+  outline: 2px solid $focus-color;
+  outline-offset: 2px;
+}
+
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Base table container
+.ngt-table-container {
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  color: $text-color;
+  background: white;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  overflow: hidden;
+  
+  * {
+    box-sizing: border-box;
+  }
+}
+
+// Loading overlay
+.ngt-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  @include flex-center;
+  justify-content: center;
+  z-index: 1000;
+  
+  .ngt-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid $secondary-color;
+    border-top: 3px solid $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Header container
+.ngt-header-container {
+  display: flex;
+  background: $secondary-color;
+  border-bottom: 2px solid $border-color;
+  position: relative;
+  z-index: 100;
+  
+  &.ngt-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+}
+
+.ngt-header-section {
+  &.ngt-frozen-left,
+  &.ngt-frozen-right {
+    position: relative;
+    z-index: 150;
+    background: $secondary-color;
+    flex-shrink: 0;
+    
+    &.ngt-frozen-left {
+      border-right: 1px solid $border-color;
+    }
+    
+    &.ngt-frozen-right {
+      border-left: 1px solid $border-color;
+    }
+  }
+  
+  &.ngt-scrollable {
+    flex: 1;
+    overflow: hidden;
+    min-width: 0;
+  }
+}
+
+.ngt-header-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.ngt-header-row {
+  height: $header-height;
+}
+
+.ngt-header-cell {
+  padding: 0;
+  border: none;
+  border-right: 1px solid $border-color;
+  text-align: left;
+  font-weight: 600;
+  color: $text-color;
+  background: $secondary-color;
+  position: relative;
+  
+  &:last-child {
+    border-right: none;
+  }
+  
+  &.ngt-sortable {
+    cursor: pointer;
+    
+    &:hover {
+      background: #e9e9e9; // Equivalent to darken($secondary-color, 5%)
+    }
+  }
+  
+  &.ngt-selection-header,
+  &.ngt-expand-header {
+    width: 48px;
+    text-align: center;
+  }
+}
+
+.ngt-header-content {
+  @include flex-center;
+  height: 100%;
+  padding: 0 $cell-padding;
+  position: relative;
+  
+  &.ngt-clickable {
+    &:focus {
+      @include focus-outline;
+    }
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+.ngt-header-text {
+  @include text-truncate;
+  flex: 1;
+}
+
+.ngt-sort-icon {
+  margin-left: 8px;
+  font-size: 12px;
+  opacity: 0.6;
+  transition: $transition;
+  
+  &.ngt-icon-sort::before {
+    content: '↕';
+  }
+  
+  &.ngt-icon-sort-up::before {
+    content: '↑';
+  }
+  
+  &.ngt-icon-sort-down::before {
+    content: '↓';
+  }
+}
+
+// Body container
+.ngt-body-container {
+  position: relative;
+  
+  &.ngt-horizontal-scroll {
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+}
+
+// Row container
+.ngt-row-container {
+  display: flex;
+  border-bottom: 1px solid $border-color;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.ngt-row-section {
+  &.ngt-frozen-left,
+  &.ngt-frozen-right {
+    position: relative;
+    z-index: 50;
+    background: white;
+    flex-shrink: 0;
+    
+    &.ngt-frozen-left {
+      border-right: 1px solid $border-color;
+    }
+    
+    &.ngt-frozen-right {
+      border-left: 1px solid $border-color;
+    }
+  }
+  
+  &.ngt-scrollable {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+}
+
+.ngt-row {
+  display: flex;
+  min-height: $row-height;
+  transition: $transition;
+  cursor: pointer;
+  
+  &:hover,
+  &.ngt-hovered {
+    background: $hover-color;
+  }
+  
+  &.ngt-selected {
+    background: $selected-color;
+  }
+  
+  &:focus-within {
+    @include focus-outline;
+  }
+}
+
+.ngt-cell {
+  @include flex-center;
+  padding: 0 $cell-padding;
+  border-right: 1px solid $border-color;
+  min-height: $row-height;
+  
+  &:last-child {
+    border-right: none;
+  }
+  
+  &.ngt-selection-cell,
+  &.ngt-expand-cell {
+    width: 48px;
+    justify-content: center;
+    padding: 0;
+  }
+  
+  span {
+    @include text-truncate;
+    width: 100%;
+  }
+}
+
+// Form controls
+.ngt-checkbox {
+  width: 16px;
+  height: 16px;
+  border: 2px solid $border-color;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: $transition;
+  
+  &:checked {
+    background: $primary-color;
+    border-color: $primary-color;
+  }
+  
+  &:focus {
+    @include focus-outline;
+  }
+  
+  &:indeterminate {
+    background: $primary-color;
+    border-color: $primary-color;
+    
+    &::after {
+      content: '−';
+      color: white;
+      font-weight: bold;
+    }
+  }
+}
+
+.ngt-expand-button {
+  width: 24px;
+  height: 24px;
+  border: 1px solid $border-color;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  @include flex-center;
+  justify-content: center;
+  transition: $transition;
+  
+  &:hover {
+    background: $hover-color;
+    border-color: $primary-color;
+  }
+  
+  &:focus {
+    @include focus-outline;
+  }
+  
+  &.ngt-expanded {
+    background: $primary-color;
+    border-color: $primary-color;
+    color: white;
+  }
+}
+
+.ngt-expand-icon {
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+// Expanded row
+.ngt-expanded-row {
+  border-bottom: 1px solid $border-color;
+  background: #fafbfc;
+  
+  .ngt-expanded-content {
+    padding: 16px;
+    border-left: 4px solid $primary-color;
+  }
+}
+
+// Empty state
+.ngt-empty-state {
+  @include flex-center;
+  justify-content: center;
+  padding: 48px 24px;
+  color: $text-muted;
+  font-style: italic;
+  
+  p {
+    margin: 0;
+  }
+}
+
+// Screen reader only
+.ngt-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .ngt-table-container {
+    font-size: 13px;
+  }
+  
+  .ngt-cell {
+    padding: 0 8px;
+  }
+  
+  .ngt-header-content {
+    padding: 0 8px;
+  }
+  
+  .ngt-header-cell,
+  .ngt-row {
+    min-height: 36px;
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .ngt-table-container {
+    border: 2px solid;
+  }
+  
+  .ngt-header-cell,
+  .ngt-cell {
+    border-right: 2px solid;
+  }
+  
+  .ngt-row-container {
+    border-bottom: 2px solid;
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .ngt-table-container {
+    background: #1a1a1a;
+    color: #ffffff;
+    border-color: #404040;
+  }
+  
+  .ngt-header-container,
+  .ngt-header-cell {
+    background: #2a2a2a;
+  }
+  
+  .ngt-row {
+    &:hover,
+    &.ngt-hovered {
+      background: #333333;
+    }
+    
+    &.ngt-selected {
+      background: #1e3a5f;
+    }
+  }
+  
+  .ngt-cell,
+  .ngt-header-cell {
+    border-color: #404040;
+  }
+  
+  .ngt-expanded-row {
+    background: #262626;
+  }
+  
+  .ngt-checkbox {
+    border-color: #666666;
+    background: #1a1a1a;
+    
+    &:checked {
+      background: $primary-color;
+    }
+  }
+  
+  .ngt-expand-button {
+    background: #1a1a1a;
+    border-color: #666666;
+    color: #ffffff;
+    
+    &:hover {
+      background: #333333;
+    }
+  }
+}
