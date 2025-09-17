@@ -14,7 +14,9 @@ import {
   input,
   output,
   TemplateRef,
-  ContentChild
+  ContentChild,
+  ContentChildren,
+  QueryList
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { 
@@ -26,7 +28,7 @@ import {
   RowSelectionState,
   TableEvents,
   ExpandableRowContext,
-  RowContext 
+  ColumnTemplateContext
 } from '../types/table.types';
 import { 
   getNestedProperty, 
@@ -53,13 +55,11 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   // Template content children for customization
   @ContentChild('expandedRowTemplate', { static: false }) expandedRowTemplate?: TemplateRef<ExpandableRowContext<T>>;
   @ContentChild('cellTemplate', { static: false }) cellTemplate?: TemplateRef<any>;
-  @ContentChild('rowTemplate', { static: false }) rowTemplate?: TemplateRef<RowContext<T>>;
 
   // Inputs using the new signal-based approach
   data = input.required<T[]>();
   columns = input.required<ColumnDefinition<T>[]>();
   config = input<TableConfiguration>({});
-  useRowTemplate = input<boolean>(false);
   
   // Outputs using the new signal-based approach
   sortChange = output<SortState>();
@@ -407,14 +407,13 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
     };
   }
 
-  getRowContext(row: T, index: number, rowId: string): RowContext<T> {
+  getColumnTemplateContext(row: T, column: ColumnDefinition<T>, index: number, rowId: string): ColumnTemplateContext<T> {
     return {
-      $implicit: row,
+      $implicit: this.getCellValue(row, column),
+      row: row,
+      column: column,
       index: index,
-      rowId: rowId,
-      columns: this.columns(),
-      selected: this.isRowSelected(rowId),
-      hovered: this.isRowHovered(rowId)
+      rowId: rowId
     };
   }
 }

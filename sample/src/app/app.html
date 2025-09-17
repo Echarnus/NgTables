@@ -95,7 +95,6 @@
           [data]="users()"
           [columns]="columns()"
           [config]="tableConfig()"
-          [useRowTemplate]="useRowTemplate()"
           (sortChange)="onSort($event)"
           (rowExpand)="onRowExpand($event)"
           (selectionChange)="onSelectionChange($event)"
@@ -187,38 +186,28 @@
             </div>
           </ng-template>
           
-          <!-- Custom row template when enabled -->
-          <ng-template #rowTemplate let-user let-index="index" let-rowId="rowId" let-columns="columns" let-selected="selected" let-hovered="hovered">
-            <div class="custom-row-template" 
-                 [class.selected]="selected" 
-                 [class.hovered]="hovered">
-              <div class="template-row-header">
-                <span class="row-number">#{{index + 1}}</span>
-                <span class="user-name">{{user.firstName}} {{user.lastName}}</span>
-                <span class="row-status" [class]="'status-' + user.status">{{user.status}}</span>
-              </div>
-              <div class="template-row-content">
-                <div class="user-info">
-                  <div class="avatar-section">
-                    <div class="template-avatar">{{user.firstName.charAt(0)}}{{user.lastName.charAt(0)}}</div>
-                  </div>
-                  <div class="info-section">
-                    <div class="primary-info">
-                      <span class="company">{{user.company}}</span>
-                      <span class="role">{{user.role}}</span>
-                    </div>
-                    <div class="contact-info">
-                      <span class="email">📧 {{user.email}}</span>
-                      <span class="subscriptions">📊 {{user.subscriptions}} subscriptions</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="template-actions">
-                  <button class="template-btn" (click)="editUser(user); $event.stopPropagation()">Edit</button>
-                  <button class="template-btn" (click)="viewProfile(user); $event.stopPropagation()">Profile</button>
+          <!-- Single cell template that handles different column types -->
+          <ng-template #cellTemplate let-value let-row="row" let-column="column" let-index="index" let-rowId="rowId">
+            @if (column.id === 'firstName') {
+              <div class="user-name-cell">
+                <div class="name-avatar">{{row.firstName.charAt(0)}}{{row.lastName.charAt(0)}}</div>
+                <div class="name-info">
+                  <div class="full-name">{{row.firstName}} {{row.lastName}}</div>
+                  <div class="user-id">ID: {{row.id}}</div>
                 </div>
               </div>
-            </div>
+            } @else if (column.id === 'status') {
+              <div class="status-cell">
+                <span class="status-badge" [class]="'status-' + value">{{value}}</span>
+                <div class="status-actions">
+                  <button class="action-btn" (click)="editUser(row); $event.stopPropagation()">✏️</button>
+                  <button class="action-btn" (click)="viewProfile(row); $event.stopPropagation()">👤</button>
+                </div>
+              </div>
+            } @else {
+              <!-- Fallback for other columns -->
+              <span>{{value}}</span>
+            }
           </ng-template>
         </ngt-table>
       </div>

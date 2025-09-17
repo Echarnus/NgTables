@@ -346,7 +346,8 @@ export class App {
       accessor: 'firstName',
       width: '150px',
       frozen: this.makeFrozenColumnsVisible() ? 'left' : undefined,
-      sortable: true
+      sortable: true,
+      useTemplate: this.useTemplateBasedColumns()
     },
     {
       id: 'lastName',
@@ -382,11 +383,12 @@ export class App {
       accessor: 'status',
       width: '120px',
       sortable: true,
-      cellRenderer: (value: string) => {
+      useTemplate: this.useTemplateBasedColumns(),
+      cellRenderer: !this.useTemplateBasedColumns() ? (value: string) => {
         const statusClass = value === 'active' ? 'status-active' : 
                            value === 'pending' ? 'status-pending' : 'status-inactive';
         return `<span class="status-badge ${statusClass}">${value}</span>`;
-      }
+      } : undefined
     },
     {
       id: 'joinDate',
@@ -439,6 +441,10 @@ export class App {
   constrainWidth = signal(false);
   makeFrozenColumnsVisible = signal(false);
   useRowTemplate = signal(false);
+
+  useTemplateBasedColumns(): boolean {
+    return this.useRowTemplate();
+  }
 
   // Toggle methods for demo controls
   toggleExpandableRows(): void {

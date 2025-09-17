@@ -25,6 +25,22 @@ export interface ColumnDefinition<T = any> {
   resizable?: boolean;
   /** Custom sort function */
   sortFunction?: (a: T, b: T, direction: SortDirection) => number;
+  /** Whether to use template for this column */
+  useTemplate?: boolean;
+}
+
+/** Context provided to column templates */
+export interface ColumnTemplateContext<T = any> {
+  /** The cell value */
+  $implicit: any;
+  /** The row data object */
+  row: T;
+  /** The column definition */
+  column: ColumnDefinition<T>;
+  /** Zero-based row index */
+  index: number;
+  /** Unique row identifier */
+  rowId: string;
 }
 
 export type SortDirection = 'asc' | 'desc' | null;
@@ -100,19 +116,4 @@ export interface ExpandableRowContext<T = any> {
   rowId: string;
   /** Whether the row is expanded */
   expanded: boolean;
-}
-
-export interface RowContext<T = any> {
-  /** The row data */
-  $implicit: T;
-  /** The row index */
-  index: number;
-  /** The row ID */
-  rowId: string;
-  /** The current columns */
-  columns: ColumnDefinition<T>[];
-  /** Whether the row is selected */
-  selected: boolean;
-  /** Whether the row is hovered */
-  hovered: boolean;
 }
