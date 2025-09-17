@@ -56,4 +56,32 @@ You are an expert in TypeScript, Angular, scalable web application development, 
 
 ---
 
-**When writing code or refactoring, always act as a senior Angular/UX engineer, following the practices above with OnPush and Signals as default.
+**When writing code or refactoring, always act as a senior Angular/UX engineer, following the practices above with OnPush and Signals as default.**
+
+---
+
+## Stakeholder Feedback & Visual Demonstration Requirements
+
+- **Mandatory Feedback Integration:**  
+  Every feature, bug fix, or enhancement must include a mechanism for stakeholders to provide feedback on the changes.
+  - This can be a comment link, form, or embedded feedback widget in the UI.
+
+- **Visual Demonstration Requirement:**  
+  If the contribution is graphical (UI/UX), you **must** include screenshots showing the new/changed feature in action.
+  - Place screenshots and GIFs in the `docs/assets/` directory.
+  - Reference these visuals in your pull request description, documentation, or relevant markdown files.
+
+- **Behavioral Demonstration for Interactive Features:**  
+  For interactive or dynamic features, include a short GIF demonstrating the behavior.
+  - Use tools like [ScreenToGif](https://www.screentogif.com/) or [LICEcap](https://www.cockos.com/licecap/) to record GIFs.
+
+- **Document Feedback Path:**  
+  In your PR description, explain how stakeholders can give feedback (e.g., link to GitHub Discussions, issue template, or embedded app feedback).
+
+## Reference Documentation
+- Further requirements and guidelines are documented in [docs/requirements.md](../docs/requirements.md).
+
+---
+
+**Note:**  
+These requirements are enforced for all contributions. Failure to include feedback pathways and visual demonstrations may result in review delays.
