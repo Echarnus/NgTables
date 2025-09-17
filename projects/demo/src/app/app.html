@@ -1,0 +1,109 @@
+<div class="demo-container">
+  <header class="demo-header">
+    <h1>{{ title() }}</h1>
+    <p class="demo-subtitle">
+      A comprehensive table component inspired by MailChimp's design with advanced features
+      including frozen columns, expandable rows, sorting, and accessibility support.
+    </p>
+  </header>
+
+  <main class="demo-main">
+    <section class="demo-features">
+      <h2>Features Demonstrated</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>🔒 Frozen Columns</h3>
+          <p>ID column frozen on the left, Subscriptions on the right</p>
+        </div>
+        <div class="feature-card">
+          <h3>📋 Row Selection</h3>
+          <p>Multi-select with checkbox controls</p>
+        </div>
+        <div class="feature-card">
+          <h3>📊 Sorting</h3>
+          <p>Click any column header to sort data</p>
+        </div>
+        <div class="feature-card">
+          <h3>📱 Responsive</h3>
+          <p>Horizontal scrolling for narrow screens</p>
+        </div>
+        <div class="feature-card">
+          <h3>♿ Accessible</h3>
+          <p>Full keyboard navigation and screen reader support</p>
+        </div>
+        <div class="feature-card">
+          <h3>🎨 Custom Rendering</h3>
+          <p>Status badges and formatted dates</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-table">
+      <h2>Interactive Table</h2>
+      <div class="table-wrapper">
+        <ngt-mailchimp-table
+          [data]="users()"
+          [columns]="columns()"
+          [config]="tableConfig()"
+          (sortChange)="onSort($event)"
+          (rowExpand)="onRowExpand($event)"
+          (selectionChange)="onSelectionChange($event)"
+          (cellClick)="onCellClick($event)"
+          (rowClick)="onRowClick($event)">
+          
+          <!-- Expandable row content -->
+          <div slot="expanded-row" class="expanded-content">
+            <h4>Additional User Details</h4>
+            <p>This is where you would show additional information about the selected user.</p>
+            <div class="user-details">
+              <div class="detail-item">
+                <strong>Account Type:</strong> Premium
+              </div>
+              <div class="detail-item">
+                <strong>Location:</strong> New York, NY
+              </div>
+              <div class="detail-item">
+                <strong>Phone:</strong> +1 (555) 123-4567
+              </div>
+            </div>
+          </div>
+        </ngt-mailchimp-table>
+      </div>
+    </section>
+
+    <section class="demo-instructions">
+      <h2>Try These Features</h2>
+      <div class="instructions-grid">
+        <div class="instruction-item">
+          <strong>Sort columns:</strong> Click on any column header to sort the data
+        </div>
+        <div class="instruction-item">
+          <strong>Select rows:</strong> Use checkboxes to select individual rows or all rows
+        </div>
+        <div class="instruction-item">
+          <strong>Expand rows:</strong> Click the + button to show additional details
+        </div>
+        <div class="instruction-item">
+          <strong>Horizontal scroll:</strong> Try resizing your browser to see frozen columns in action
+        </div>
+        <div class="instruction-item">
+          <strong>Keyboard navigation:</strong> Use Tab, Enter, and Space keys to navigate and interact
+        </div>
+        <div class="instruction-item">
+          <strong>Check console:</strong> Open developer tools to see event logging
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="demo-footer">
+    <p>
+      Built with Angular {{ '19' }} • 
+      <a href="https://github.com/Echarnus/NgTables" target="_blank" rel="noopener">
+        View on GitHub
+      </a>
+    </p>
+  </footer>
+</div>
+
+<router-outlet />

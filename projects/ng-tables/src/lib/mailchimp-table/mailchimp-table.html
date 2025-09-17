@@ -1,0 +1,363 @@
+<div class="ngt-table-container" 
+     #tableContainer
+     [class]="config().cssClass"
+     [attr.aria-label]="'Data table with ' + data().length + ' rows'">
+  
+  <!-- Loading State -->
+  @if (config().loading) {
+    <div class="ngt-loading-overlay" role="status" aria-live="polite">
+      <div class="ngt-loading-spinner"></div>
+      <span class="ngt-sr-only">Loading table data...</span>
+    </div>
+  }
+
+  <!-- Table Header (Sticky) -->
+  <div class="ngt-header-container" 
+       #headerContainer
+       [class.ngt-sticky]="config().stickyHeader !== false"
+       [style.height]="config().headerHeight || 'auto'">
+    
+    <!-- Frozen Left Header -->
+    @if (leftFrozenColumns().length > 0) {
+      <div class="ngt-header-section ngt-frozen-left" 
+           [style.width.px]="leftFrozenWidth()">
+        <table class="ngt-header-table" role="presentation">
+          <thead>
+            <!-- Primary Header Row -->
+            <tr class="ngt-header-row" role="row">
+              <!-- Selection Column -->
+              @if (config().selectable) {
+                <th class="ngt-header-cell ngt-selection-header" 
+                    role="columnheader"
+                    scope="col">
+                  @if (config().multiSelect) {
+                    <input type="checkbox" 
+                           class="ngt-checkbox"
+                           [checked]="allSelected()"
+                           [indeterminate]="someSelected() && !allSelected()"
+                           (change)="onSelectAll($event.target?.checked || false)"
+                           [attr.aria-label]="allSelected() ? 'Deselect all rows' : 'Select all rows'"
+                           tabindex="0">
+                  }
+                </th>
+              }
+              
+              <!-- Expand Column -->
+              @if (config().expandableRows) {
+                <th class="ngt-header-cell ngt-expand-header" 
+                    role="columnheader"
+                    scope="col">
+                  <span class="ngt-sr-only">Expand/Collapse</span>
+                </th>
+              }
+              
+              <!-- Frozen Left Columns -->
+              @for (column of leftFrozenColumns(); track trackByColumnId($index, column)) {
+                <th class="ngt-header-cell"
+                    [class]="column.cssClass"
+                    [class.ngt-sortable]="column.sortable"
+                    [style.width]="column.width"
+                    [style.min-width]="column.minWidth"
+                    [style.max-width]="column.maxWidth"
+                    role="columnheader"
+                    scope="col"
+                    [attr.aria-sort]="sortState()?.columnId === column.id ? 
+                      (sortState()?.direction === 'asc' ? 'ascending' : 'descending') : 
+                      (column.sortable ? 'none' : null)">
+                  
+                  <div class="ngt-header-content"
+                       [class.ngt-clickable]="column.sortable"
+                       (click)="onSort(column)"
+                       (keydown.enter)="onSort(column)"
+                       (keydown.space)="onSort(column)"
+                       [tabindex]="column.sortable ? 0 : -1"
+                       [attr.aria-label]="column.sortable ? 
+                         'Sort by ' + column.header + ', currently ' + 
+                         (sortState()?.columnId === column.id ? 
+                           (sortState()?.direction || 'not sorted') : 'not sorted') : 
+                         column.header">
+                    
+                    <span class="ngt-header-text">{{ column.header }}</span>
+                    
+                    @if (column.sortable) {
+                      <span class="ngt-sort-icon ngt-icon-{{ getSortIcon(column) }}"
+                            aria-hidden="true"></span>
+                    }
+                  </div>
+                </th>
+              }
+            </tr>
+          </thead>
+        </table>
+      </div>
+    }
+
+    <!-- Scrollable Header -->
+    <div class="ngt-header-section ngt-scrollable">
+      <table class="ngt-header-table" role="presentation">
+        <thead>
+          <tr class="ngt-header-row" role="row">
+            <!-- Non-frozen columns -->
+            @for (column of scrollableColumns(); track trackByColumnId($index, column)) {
+              <th class="ngt-header-cell"
+                  [class]="column.cssClass"
+                  [class.ngt-sortable]="column.sortable"
+                  [style.width]="column.width"
+                  [style.min-width]="column.minWidth"
+                  [style.max-width]="column.maxWidth"
+                  role="columnheader"
+                  scope="col"
+                  [attr.aria-sort]="sortState()?.columnId === column.id ? 
+                    (sortState()?.direction === 'asc' ? 'ascending' : 'descending') : 
+                    (column.sortable ? 'none' : null)">
+                
+                <div class="ngt-header-content"
+                     [class.ngt-clickable]="column.sortable"
+                     (click)="onSort(column)"
+                     (keydown.enter)="onSort(column)"
+                     (keydown.space)="onSort(column)"
+                     [tabindex]="column.sortable ? 0 : -1"
+                     [attr.aria-label]="column.sortable ? 
+                       'Sort by ' + column.header + ', currently ' + 
+                       (sortState()?.columnId === column.id ? 
+                         (sortState()?.direction || 'not sorted') : 'not sorted') : 
+                       column.header">
+                  
+                  <span class="ngt-header-text">{{ column.header }}</span>
+                  
+                  @if (column.sortable) {
+                    <span class="ngt-sort-icon ngt-icon-{{ getSortIcon(column) }}"
+                          aria-hidden="true"></span>
+                  }
+                </div>
+              </th>
+            }
+          </tr>
+        </thead>
+      </table>
+    </div>
+
+    <!-- Frozen Right Header -->
+    @if (rightFrozenColumns().length > 0) {
+      <div class="ngt-header-section ngt-frozen-right" 
+           [style.width.px]="rightFrozenWidth()">
+        <table class="ngt-header-table" role="presentation">
+          <thead>
+            <tr class="ngt-header-row" role="row">
+              @for (column of rightFrozenColumns(); track trackByColumnId($index, column)) {
+                <th class="ngt-header-cell"
+                    [class]="column.cssClass"
+                    [class.ngt-sortable]="column.sortable"
+                    [style.width]="column.width"
+                    [style.min-width]="column.minWidth"
+                    [style.max-width]="column.maxWidth"
+                    role="columnheader"
+                    scope="col"
+                    [attr.aria-sort]="sortState()?.columnId === column.id ? 
+                      (sortState()?.direction === 'asc' ? 'ascending' : 'descending') : 
+                      (column.sortable ? 'none' : null)">
+                  
+                  <div class="ngt-header-content"
+                       [class.ngt-clickable]="column.sortable"
+                       (click)="onSort(column)"
+                       (keydown.enter)="onSort(column)"
+                       (keydown.space)="onSort(column)"
+                       [tabindex]="column.sortable ? 0 : -1"
+                       [attr.aria-label]="column.sortable ? 
+                         'Sort by ' + column.header + ', currently ' + 
+                         (sortState()?.columnId === column.id ? 
+                           (sortState()?.direction || 'not sorted') : 'not sorted') : 
+                         column.header">
+                    
+                    <span class="ngt-header-text">{{ column.header }}</span>
+                    
+                    @if (column.sortable) {
+                      <span class="ngt-sort-icon ngt-icon-{{ getSortIcon(column) }}"
+                            aria-hidden="true"></span>
+                    }
+                  </div>
+                </th>
+              }
+            </tr>
+          </thead>
+        </table>
+      </div>
+    }
+  </div>
+
+  <!-- Table Body -->
+  <div class="ngt-body-container" 
+       #bodyContainer
+       [class.ngt-horizontal-scroll]="config().horizontalScroll !== false">
+    
+    <!-- Empty State -->
+    @if (sortedData().length === 0 && !config().loading) {
+      <div class="ngt-empty-state" role="status">
+        <p>{{ config().emptyMessage || 'No data available' }}</p>
+      </div>
+    }
+
+    <!-- Data Rows -->
+    @if (sortedData().length > 0) {
+      @for (row of sortedData(); track trackByRowId($index, row); let rowIndex = $index) {
+        @let rowId = getRowId(row, rowIndex);
+        
+        <!-- Main Row -->
+        <div class="ngt-row-container">
+          <!-- Frozen Left Cells -->
+          @if (leftFrozenColumns().length > 0 || config().selectable || config().expandableRows) {
+            <div class="ngt-row-section ngt-frozen-left" 
+                 [style.width.px]="leftFrozenWidth()">
+              <div class="ngt-row"
+                   [class.ngt-selected]="isRowSelected(rowId)"
+                   [class.ngt-hovered]="isRowHovered(rowId)"
+                   [style.height]="config().rowHeight || 'auto'"
+                   role="row"
+                   [attr.aria-selected]="config().selectable ? isRowSelected(rowId) : null"
+                   (click)="onRowClick(row, rowId)"
+                   (mouseenter)="onRowHover(rowId)"
+                   (mouseleave)="onRowHover(null)">
+                
+                <!-- Selection Cell -->
+                @if (config().selectable) {
+                  <div class="ngt-cell ngt-selection-cell" role="gridcell">
+                    <input type="checkbox" 
+                           class="ngt-checkbox"
+                           [checked]="isRowSelected(rowId)"
+                           (change)="onRowSelect(rowId, $event.target?.checked || false)"
+                           [attr.aria-label]="'Select row ' + (rowIndex + 1)"
+                           tabindex="0">
+                  </div>
+                }
+                
+                <!-- Expand Cell -->
+                @if (config().expandableRows) {
+                  <div class="ngt-cell ngt-expand-cell" role="gridcell">
+                    <button class="ngt-expand-button"
+                            type="button"
+                            [class.ngt-expanded]="isRowExpanded(rowId)"
+                            (click)="onRowExpand(rowId, row); $event.stopPropagation()"
+                            [attr.aria-label]="isRowExpanded(rowId) ? 
+                              'Collapse row ' + (rowIndex + 1) : 
+                              'Expand row ' + (rowIndex + 1)"
+                            [attr.aria-expanded]="isRowExpanded(rowId)">
+                      <span class="ngt-expand-icon" aria-hidden="true">
+                        {{ isRowExpanded(rowId) ? '−' : '+' }}
+                      </span>
+                    </button>
+                  </div>
+                }
+                
+                <!-- Frozen Left Data Cells -->
+                @for (column of leftFrozenColumns(); track trackByColumnId($index, column)) {
+                  <div class="ngt-cell"
+                       [class]="column.cssClass"
+                       [style.width]="column.width"
+                       [style.min-width]="column.minWidth"
+                       [style.max-width]="column.maxWidth"
+                       role="gridcell"
+                       (click)="onCellClick(getCellValue(row, column), row, column); $event.stopPropagation()">
+                    
+                    @if (column.cellRenderer) {
+                      <div [innerHTML]="column.cellRenderer(getCellValue(row, column), row, column)"></div>
+                    } @else {
+                      <span>{{ getCellValue(row, column) }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Scrollable Cells -->
+          <div class="ngt-row-section ngt-scrollable">
+            <div class="ngt-row"
+                 [class.ngt-selected]="isRowSelected(rowId)"
+                 [class.ngt-hovered]="isRowHovered(rowId)"
+                 [style.height]="config().rowHeight || 'auto'"
+                 role="row"
+                 [attr.aria-selected]="config().selectable ? isRowSelected(rowId) : null"
+                 (click)="onRowClick(row, rowId)"
+                 (mouseenter)="onRowHover(rowId)"
+                 (mouseleave)="onRowHover(null)">
+              
+              @for (column of scrollableColumns(); track trackByColumnId($index, column)) {
+                <div class="ngt-cell"
+                     [class]="column.cssClass"
+                     [style.width]="column.width"
+                     [style.min-width]="column.minWidth"
+                     [style.max-width]="column.maxWidth"
+                     role="gridcell"
+                     (click)="onCellClick(getCellValue(row, column), row, column); $event.stopPropagation()">
+                  
+                  @if (column.cellRenderer) {
+                    <div [innerHTML]="column.cellRenderer(getCellValue(row, column), row, column)"></div>
+                  } @else {
+                    <span>{{ getCellValue(row, column) }}</span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Frozen Right Cells -->
+          @if (rightFrozenColumns().length > 0) {
+            <div class="ngt-row-section ngt-frozen-right" 
+                 [style.width.px]="rightFrozenWidth()">
+              <div class="ngt-row"
+                   [class.ngt-selected]="isRowSelected(rowId)"
+                   [class.ngt-hovered]="isRowHovered(rowId)"
+                   [style.height]="config().rowHeight || 'auto'"
+                   role="row"
+                   [attr.aria-selected]="config().selectable ? isRowSelected(rowId) : null"
+                   (click)="onRowClick(row, rowId)"
+                   (mouseenter)="onRowHover(rowId)"
+                   (mouseleave)="onRowHover(null)">
+                
+                @for (column of rightFrozenColumns(); track trackByColumnId($index, column)) {
+                  <div class="ngt-cell"
+                       [class]="column.cssClass"
+                       [style.width]="column.width"
+                       [style.min-width]="column.minWidth"
+                       [style.max-width]="column.maxWidth"
+                       role="gridcell"
+                       (click)="onCellClick(getCellValue(row, column), row, column); $event.stopPropagation()">
+                    
+                    @if (column.cellRenderer) {
+                      <div [innerHTML]="column.cellRenderer(getCellValue(row, column), row, column)"></div>
+                    } @else {
+                      <span>{{ getCellValue(row, column) }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Expanded Row Content -->
+        @if (config().expandableRows && isRowExpanded(rowId)) {
+          <div class="ngt-expanded-row" 
+               role="region"
+               [attr.aria-label]="'Expanded content for row ' + (rowIndex + 1)">
+            <div class="ngt-expanded-content">
+              <ng-content select="[slot=expanded-row]"></ng-content>
+            </div>
+          </div>
+        }
+      }
+    }
+  </div>
+</div>
+
+<!-- Screen Reader Only Content -->
+<div class="ngt-sr-only" aria-live="polite" aria-atomic="true">
+  @if (sortState()) {
+    Table sorted by {{ getSortedColumnHeader() }} 
+    in {{ sortState()?.direction === 'asc' ? 'ascending' : 'descending' }} order.
+  }
+  
+  @if (someSelected()) {
+    {{ getSelectedRowsCount() }} of {{ data().length }} rows selected.
+  }
+</div>
