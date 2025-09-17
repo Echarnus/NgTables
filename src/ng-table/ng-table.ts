@@ -12,7 +12,9 @@ import {
   computed,
   effect,
   input,
-  output
+  output,
+  TemplateRef,
+  ContentChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { 
@@ -22,7 +24,8 @@ import {
   SortDirection, 
   RowExpandState, 
   RowSelectionState,
-  TableEvents 
+  TableEvents,
+  ExpandableRowContext 
 } from '../types/table.types';
 import { 
   getNestedProperty, 
@@ -45,6 +48,10 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   @ViewChild('bodyContainer', { static: true }) bodyContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('scrollableHeader', { static: false }) scrollableHeader?: ElementRef<HTMLDivElement>;
   @ViewChild('scrollableBody', { static: false }) scrollableBody?: ElementRef<HTMLDivElement>;
+
+  // Template content children for customization
+  @ContentChild('expandedRowTemplate', { static: false }) expandedRowTemplate?: TemplateRef<ExpandableRowContext<T>>;
+  @ContentChild('cellTemplate', { static: false }) cellTemplate?: TemplateRef<any>;
 
   // Inputs using the new signal-based approach
   data = input.required<T[]>();
@@ -386,5 +393,14 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
 
   getSelectedRowsCount(): number {
     return Object.keys(this.selectedRows()).length;
+  }
+
+  getExpandedRowContext(row: T, index: number, rowId: string): ExpandableRowContext<T> {
+    return {
+      $implicit: row,
+      index: index,
+      rowId: rowId,
+      expanded: this.isRowExpanded(rowId)
+    };
   }
 }

@@ -94,22 +94,90 @@
           (cellClick)="onCellClick($event)"
           (rowClick)="onRowClick($event)">
           
-          <!-- Expandable row content -->
-          <div slot="expanded-row" class="expanded-content">
-            <h4>Additional User Details</h4>
-            <p>This is where you would show additional information about the selected user.</p>
-            <div class="user-details">
-              <div class="detail-item">
-                <strong>Account Type:</strong> Premium
+          <!-- Template-based expandable row content with access to row data -->
+          <ng-template #expandedRowTemplate let-user let-index="index" let-rowId="rowId" let-expanded="expanded">
+            <div class="expanded-content">
+              <div class="expanded-header">
+                <h4>{{user.firstName}} {{user.lastName}} - Detailed Information</h4>
+                <span class="row-info">Row #{{index + 1}} | ID: {{rowId}} | Status: {{expanded ? 'Expanded' : 'Collapsed'}}</span>
               </div>
-              <div class="detail-item">
-                <strong>Location:</strong> New York, NY
-              </div>
-              <div class="detail-item">
-                <strong>Phone:</strong> +1 (555) 123-4567
+              
+              <div class="user-details">
+                <div class="detail-section">
+                  <h5>📧 Contact Information</h5>
+                  <div class="detail-item">
+                    <strong>Primary Email:</strong> {{user.email}}
+                  </div>
+                  <div class="detail-item">
+                    <strong>Phone:</strong> +1 (555) {{user.id}}{{user.id}}-{{1000 + user.id}}
+                  </div>
+                  <div class="detail-item">
+                    <strong>Preferred Contact:</strong> Email
+                  </div>
+                </div>
+                
+                <div class="detail-section">
+                  <h5>🏢 Company Details</h5>
+                  <div class="detail-item">
+                    <strong>Company:</strong> {{user.company}}
+                  </div>
+                  <div class="detail-item">
+                    <strong>Department:</strong> {{user.role === 'Admin' ? 'Administration' : user.role === 'Manager' ? 'Management' : 'Development'}}
+                  </div>
+                  <div class="detail-item">
+                    <strong>Employee ID:</strong> EMP-{{user.id.toString().padStart(4, '0')}}
+                  </div>
+                </div>
+                
+                <div class="detail-section">
+                  <h5>📊 Account Statistics</h5>
+                  <div class="detail-item">
+                    <strong>Total Subscriptions:</strong> {{user.subscriptions}}
+                  </div>
+                  <div class="detail-item">
+                    <strong>Account Status:</strong> 
+                    <span class="status-badge status-{{user.status}}">{{user.status | titlecase}}</span>
+                  </div>
+                  <div class="detail-item">
+                    <strong>Member Since:</strong> {{user.joinDate}}
+                  </div>
+                  <div class="detail-item">
+                    <strong>Last Login:</strong> {{user.lastLogin}}
+                  </div>
+                </div>
+                
+                @if (user.role === 'Admin' || user.role === 'Manager') {
+                  <div class="detail-section">
+                    <h5>🔑 Administrative Access</h5>
+                    <div class="detail-item">
+                      <strong>Access Level:</strong> {{user.role === 'Admin' ? 'Full Administrator' : 'Department Manager'}}
+                    </div>
+                    <div class="detail-item">
+                      <strong>Permissions:</strong> User Management, Reports{{user.role === 'Admin' ? ', System Settings' : ''}}
+                    </div>
+                  </div>
+                }
+                
+                <div class="detail-section">
+                  <h5>🎨 Custom Rendering Demo</h5>
+                  <div class="detail-item">
+                    <strong>Profile Picture:</strong>
+                    <div class="profile-avatar">
+                      <div class="avatar-circle">{{user.firstName.charAt(0)}}{{user.lastName.charAt(0)}}</div>
+                    </div>
+                  </div>
+                  <div class="detail-item">
+                    <strong>Quick Actions:</strong>
+                    <div class="action-buttons">
+                      <button class="action-btn primary" (click)="editUser(user)">✏️ Edit</button>
+                      <button class="action-btn secondary" (click)="viewProfile(user)">👤 Profile</button>
+                      <button class="action-btn" (click)="sendEmail(user)">📧 Email</button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </ng-template>
         </ngt-table>
       </div>
     </section>
@@ -124,7 +192,10 @@
           <strong>Select rows:</strong> Use checkboxes to select individual rows or all rows
         </div>
         <div class="instruction-item">
-          <strong>Expand rows:</strong> Click the + button to show additional details
+          <strong>Expand rows:</strong> Click the + button to show dynamic, template-based additional details
+        </div>
+        <div class="instruction-item">
+          <strong>Template-based content:</strong> Expandable rows now use ng-template with full access to row data, index, and state
         </div>
         <div class="instruction-item">
           <strong>Vertical scroll:</strong> Table now has 25 rows - scroll down to see all data

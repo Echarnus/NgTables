@@ -90,3 +90,14 @@ export interface ExpandableRowData<T = any> {
   /** Whether the row is initially expanded */
   expanded?: boolean;
 }
+
+export interface ExpandableRowContext<T = any> {
+  /** The row data */
+  $implicit: T;
+  /** The row index */
+  index: number;
+  /** The row ID */
+  rowId: string;
+  /** Whether the row is expanded */
+  expanded: boolean;
+}

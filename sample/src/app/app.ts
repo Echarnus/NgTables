@@ -1,5 +1,6 @@
 import { Component, signal, computed } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CommonModule, TitleCasePipe } from '@angular/common';
 import { NgTableComponent } from '../../../src/public-api';
 import { ColumnDefinition, TableConfiguration, SortState } from '../../../src/public-api';
 
@@ -18,7 +19,7 @@ interface User {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NgTableComponent],
+  imports: [RouterOutlet, NgTableComponent, CommonModule, TitleCasePipe],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -482,5 +483,21 @@ export class App {
 
   onRowClick(event: { row: User; rowId: string }): void {
     console.log('Row clicked:', event);
+  }
+
+  // Template methods for expandable row actions
+  editUser(user: User): void {
+    console.log('Edit user:', user);
+    alert(`Editing user: ${user.firstName} ${user.lastName}`);
+  }
+
+  viewProfile(user: User): void {
+    console.log('View profile:', user);
+    alert(`Viewing profile for: ${user.firstName} ${user.lastName}`);
+  }
+
+  sendEmail(user: User): void {
+    console.log('Send email to:', user);
+    alert(`Sending email to: ${user.email}`);
   }
 }

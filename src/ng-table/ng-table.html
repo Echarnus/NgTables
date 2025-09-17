@@ -343,7 +343,16 @@
                role="region"
                [attr.aria-label]="'Expanded content for row ' + (rowIndex + 1)">
             <div class="ngt-expanded-content">
-              <ng-content select="[slot=expanded-row]"></ng-content>
+              <!-- Template-based expandable content (preferred) -->
+              @if (expandedRowTemplate) {
+                <ng-container 
+                  [ngTemplateOutlet]="expandedRowTemplate"
+                  [ngTemplateOutletContext]="getExpandedRowContext(row, rowIndex, rowId)">
+                </ng-container>
+              } @else {
+                <!-- Fallback to content projection for backward compatibility -->
+                <ng-content select="[slot=expanded-row]"></ng-content>
+              }
             </div>
           </div>
         }
