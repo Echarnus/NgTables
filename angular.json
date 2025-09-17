@@ -8,18 +8,21 @@
   "projects": {
     "ng-tables": {
       "projectType": "library",
-      "root": "projects/ng-tables",
-      "sourceRoot": "projects/ng-tables/src",
+      "root": "src",
+      "sourceRoot": "src",
       "prefix": "ngt",
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
+          "options": {
+            "tsConfig": "src/tsconfig.lib.json"
+          },
           "configurations": {
             "production": {
-              "tsConfig": "projects/ng-tables/tsconfig.lib.prod.json"
+              "tsConfig": "src/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/ng-tables/tsconfig.lib.json"
+              "tsConfig": "src/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -27,39 +30,40 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
-            "tsConfig": "projects/ng-tables/tsconfig.spec.json"
+            "tsConfig": "test/tsconfig.spec.json",
+            "karmaConfig": "test/karma.conf.js"
           }
         }
       }
     },
-    "demo": {
+    "sample": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "projects/demo",
-      "sourceRoot": "projects/demo/src",
+      "root": "sample",
+      "sourceRoot": "sample/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "projects/demo/src/main.ts",
+            "browser": "sample/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/demo/tsconfig.app.json",
+            "tsConfig": "sample/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/demo/public"
+                "input": "sample/public"
               }
             ],
             "styles": [
-              "projects/demo/src/styles.scss"
+              "sample/src/styles.scss"
             ]
           },
           "configurations": {
@@ -76,7 +80,8 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "baseHref": "/NgTables/"
             },
             "development": {
               "optimization": false,
@@ -90,10 +95,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "demo:build:production"
+              "buildTarget": "sample:build:production"
             },
             "development": {
-              "buildTarget": "demo:build:development"
+              "buildTarget": "sample:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -108,16 +113,16 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projects/demo/tsconfig.spec.json",
+            "tsConfig": "sample/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/demo/public"
+                "input": "sample/public"
               }
             ],
             "styles": [
-              "projects/demo/src/styles.scss"
+              "sample/src/styles.scss"
             ]
           }
         }

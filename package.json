@@ -1,13 +1,42 @@
 {
   "name": "ng-tables",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "MailChimp-inspired table component for Angular with frozen columns, expandable rows, and full accessibility support",
+  "main": "dist/ng-tables/index.js",
+  "module": "dist/ng-tables/fesm2022/ng-tables.mjs",
+  "types": "dist/ng-tables/index.d.ts",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "start": "ng serve sample",
+    "build": "ng build ng-tables",
+    "build:sample": "ng build sample",
+    "build:sample:prod": "ng build sample --configuration production",
+    "watch": "ng build ng-tables --watch --configuration development",
+    "test": "ng test ng-tables",
+    "test:headless": "ng test ng-tables --browsers=ChromeHeadlessCI --watch=false",
+    "lint": "echo 'No linting configured'",
+    "prepare": "npm run build"
   },
+  "keywords": [
+    "angular",
+    "table",
+    "component",
+    "mailchimp",
+    "frozen-columns",
+    "expandable-rows",
+    "accessibility",
+    "typescript"
+  ],
+  "author": "Kenneth De Clercq",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Echarnus/NgTables.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Echarnus/NgTables/issues"
+  },
+  "homepage": "https://github.com/Echarnus/NgTables#readme",
   "prettier": {
     "printWidth": 100,
     "singleQuote": true,
@@ -20,7 +49,10 @@
       }
     ]
   },
-  "private": true,
+  "peerDependencies": {
+    "@angular/common": "^19.0.0 || ^20.0.0",
+    "@angular/core": "^19.0.0 || ^20.0.0"
+  },
   "dependencies": {
     "@angular/common": "^20.3.0",
     "@angular/compiler": "^20.3.0",
