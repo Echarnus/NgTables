@@ -3,7 +3,6 @@
 
 // CSS Custom Properties for theme support
 :root {
-  // Light theme (default)
   --ngt-primary-color: #007c89;
   --ngt-secondary-color: #f4f4f4;
   --ngt-border-color: #e1e5e9;
@@ -13,86 +12,41 @@
   --ngt-selected-color: #e6f7ff;
   --ngt-focus-color: #4d90fe;
   --ngt-shadow-color: rgba(0, 0, 0, 0.1);
-  
-  // Table specific colors
-  --ngt-table-bg: #ffffff;
-  --ngt-header-bg: #f8f9fa;
-  --ngt-row-bg: #ffffff;
-  --ngt-expanded-row-bg: #f8f9fa;
-  --ngt-checkbox-bg: #ffffff;
-  --ngt-expand-button-bg: #ffffff;
+  --ngt-background-color: #ffffff;
+  --ngt-header-background: #f4f4f4;
+  --ngt-loading-overlay: rgba(255, 255, 255, 0.8);
+  --ngt-expanded-background: #fafbfc;
 }
 
-// Dark theme
+// Dark theme custom properties
 @media (prefers-color-scheme: dark) {
   :root {
-    --ngt-primary-color: #5fb3c4;
+    --ngt-primary-color: #00a3b3;
     --ngt-secondary-color: #2a2a2a;
     --ngt-border-color: #404040;
     --ngt-text-color: #ffffff;
     --ngt-text-muted: #b0b0b0;
     --ngt-hover-color: #333333;
     --ngt-selected-color: #1e3a5f;
-    --ngt-focus-color: #5fb3c4;
-    --ngt-shadow-color: rgba(255, 255, 255, 0.1);
-    
-    // Table specific colors
-    --ngt-table-bg: #1a1a1a;
-    --ngt-header-bg: #2a2a2a;
-    --ngt-row-bg: #1a1a1a;
-    --ngt-expanded-row-bg: #262626;
-    --ngt-checkbox-bg: #1a1a1a;
-    --ngt-expand-button-bg: #1a1a1a;
+    --ngt-focus-color: #4d90fe;
+    --ngt-shadow-color: rgba(0, 0, 0, 0.3);
+    --ngt-background-color: #1a1a1a;
+    --ngt-header-background: #2a2a2a;
+    --ngt-loading-overlay: rgba(26, 26, 26, 0.8);
+    --ngt-expanded-background: #262626;
   }
 }
 
-// Tailwind CSS compatibility classes
-.ngt-theme-light {
-  --ngt-primary-color: #007c89;
-  --ngt-secondary-color: #f4f4f4;
-  --ngt-border-color: #e1e5e9;
-  --ngt-text-color: #241c15;
-  --ngt-text-muted: #86888a;
-  --ngt-hover-color: #f8f9fa;
-  --ngt-selected-color: #e6f7ff;
-  --ngt-focus-color: #4d90fe;
-  --ngt-shadow-color: rgba(0, 0, 0, 0.1);
-  --ngt-table-bg: #ffffff;
-  --ngt-header-bg: #f8f9fa;
-  --ngt-row-bg: #ffffff;
-  --ngt-expanded-row-bg: #f8f9fa;
-  --ngt-checkbox-bg: #ffffff;
-  --ngt-expand-button-bg: #ffffff;
-}
-
-.ngt-theme-dark {
-  --ngt-primary-color: #5fb3c4;
-  --ngt-secondary-color: #2a2a2a;
-  --ngt-border-color: #404040;
-  --ngt-text-color: #ffffff;
-  --ngt-text-muted: #b0b0b0;
-  --ngt-hover-color: #333333;
-  --ngt-selected-color: #1e3a5f;
-  --ngt-focus-color: #5fb3c4;
-  --ngt-shadow-color: rgba(255, 255, 255, 0.1);
-  --ngt-table-bg: #1a1a1a;
-  --ngt-header-bg: #2a2a2a;
-  --ngt-row-bg: #1a1a1a;
-  --ngt-expanded-row-bg: #262626;
-  --ngt-checkbox-bg: #1a1a1a;
-  --ngt-expand-button-bg: #1a1a1a;
-}
-
-// SCSS Variables (for backward compatibility)
-$primary-color: var(--ngt-primary-color, #007c89);
-$secondary-color: var(--ngt-secondary-color, #f4f4f4);
-$border-color: var(--ngt-border-color, #e1e5e9);
-$text-color: var(--ngt-text-color, #241c15);
-$text-muted: var(--ngt-text-muted, #86888a);
-$hover-color: var(--ngt-hover-color, #f8f9fa);
-$selected-color: var(--ngt-selected-color, #e6f7ff);
-$focus-color: var(--ngt-focus-color, #4d90fe);
-$shadow-color: var(--ngt-shadow-color, rgba(0, 0, 0, 0.1));
+// Variables using custom properties
+$primary-color: var(--ngt-primary-color);
+$secondary-color: var(--ngt-secondary-color);
+$border-color: var(--ngt-border-color);
+$text-color: var(--ngt-text-color);
+$text-muted: var(--ngt-text-muted);
+$hover-color: var(--ngt-hover-color);
+$selected-color: var(--ngt-selected-color);
+$focus-color: var(--ngt-focus-color);
+$shadow-color: var(--ngt-shadow-color);
 
 $header-height: 48px;
 $row-height: 40px;
@@ -123,15 +77,21 @@ $transition: all 0.15s ease-in-out;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 14px;
   line-height: 1.4;
-  color: var(--ngt-text-color, #241c15);
-  background: var(--ngt-table-bg, #ffffff);
-  border: 1px solid var(--ngt-border-color, #e1e5e9);
+  color: var(--ngt-text-color);
+  background: var(--ngt-background-color);
+  border: 1px solid var(--ngt-border-color);
   border-radius: $border-radius;
-  overflow: hidden;
   
   * {
     box-sizing: border-box;
   }
+}
+
+// Table content wrapper - single scrollable container
+.ngt-table-content {
+  overflow-x: auto;
+  overflow-y: visible;
+  width: 100%;
 }
 
 // Loading overlay
@@ -141,7 +101,7 @@ $transition: all 0.15s ease-in-out;
   left: 0;
   right: 0;
   bottom: 0;
-  background: color-mix(in srgb, var(--ngt-table-bg, #ffffff) 80%, transparent);
+  background: var(--ngt-loading-overlay);
   @include flex-center;
   justify-content: center;
   z-index: 1000;
@@ -149,8 +109,8 @@ $transition: all 0.15s ease-in-out;
   .ngt-loading-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid var(--ngt-secondary-color, #f4f4f4);
-    border-top: 3px solid var(--ngt-primary-color, #007c89);
+    border: 3px solid var(--ngt-border-color);
+    border-top: 3px solid var(--ngt-primary-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -163,67 +123,61 @@ $transition: all 0.15s ease-in-out;
 
 // Header container
 .ngt-header-container {
-  display: flex;
-  background: var(--ngt-header-bg, #f8f9fa);
-  border-bottom: 2px solid var(--ngt-border-color, #e1e5e9);
+  display: grid;
+  grid-template-columns: max-content 1fr max-content;
+  background: var(--ngt-header-background);
+  border-bottom: 2px solid var(--ngt-border-color);
   position: relative;
   z-index: 100;
+  min-width: max-content; // Allow horizontal expansion
+  width: 100%;
   
   &.ngt-sticky {
     position: sticky;
     top: 0;
     z-index: 200;
     // Ensure smooth transitions and proper layering
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px var(--ngt-shadow-color);
   }
 }
 
 .ngt-header-section {
   &.ngt-frozen-left,
   &.ngt-frozen-right {
-    position: relative;
-    z-index: 150;
-    background: var(--ngt-header-bg, #f8f9fa);
-    flex-shrink: 0;
+    position: sticky; // Use sticky positioning for frozen headers
+    background: var(--ngt-header-background);
+    overflow: hidden; // Prevent content overflow
+    grid-column: 1; // Explicitly place in first column
     
     &.ngt-frozen-left {
-      border-right: 1px solid var(--ngt-border-color, #e1e5e9);
+      left: 0;
+      z-index: 250; // Higher z-index for frozen left header
+      border-right: 1px solid var(--ngt-border-color);
+      box-shadow: 2px 0 4px rgba(0,0,0,0.1); // Add shadow to show separation
     }
     
     &.ngt-frozen-right {
-      border-left: 1px solid var(--ngt-border-color, #e1e5e9);
+      right: 0;
+      z-index: 250; // Higher z-index for frozen right header
+      border-left: 1px solid var(--ngt-border-color);
+      box-shadow: -2px 0 4px rgba(0,0,0,0.1); // Add shadow to show separation
+      grid-column: 3; // Place in third column
     }
   }
   
   &.ngt-scrollable {
-    flex: 1;
-    overflow: hidden;
-    min-width: 0;
-    
-    // Ensure proper scrolling behavior when horizontal scroll is needed
-    &::-webkit-scrollbar {
-      height: 8px;
-    }
-    
-    &::-webkit-scrollbar-track {
-      background: var(--ngt-secondary-color, #f4f4f4);
-    }
-    
-    &::-webkit-scrollbar-thumb {
-      background: var(--ngt-border-color, #e1e5e9);
-      border-radius: 4px;
-    }
-    
-    &::-webkit-scrollbar-thumb:hover {
-      background: var(--ngt-text-muted, #86888a);
-    }
+    overflow: visible; // No individual scrolling
+    z-index: 50; // Lower z-index for scrollable header
+    background: var(--ngt-header-background);
+    grid-column: 2; // Place in middle column
   }
 }
 
 .ngt-header-table {
-  width: 100%;
+  width: max-content; // Allow table to expand based on content
+  min-width: 100%; // Ensure table is at least as wide as container
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: fixed; // Use fixed layout for consistent column alignment
 }
 
 .ngt-header-row {
@@ -233,12 +187,14 @@ $transition: all 0.15s ease-in-out;
 .ngt-header-cell {
   padding: 0;
   border: none;
-  border-right: 1px solid var(--ngt-border-color, #e1e5e9);
+  border-right: 1px solid var(--ngt-border-color);
   text-align: left;
   font-weight: 600;
-  color: $text-color;
-  background: $secondary-color;
+  color: var(--ngt-text-color);
+  background: var(--ngt-header-background);
   position: relative;
+  box-sizing: border-box;
+  overflow: hidden; // Prevent header content overflow
   
   &:last-child {
     border-right: none;
@@ -248,7 +204,7 @@ $transition: all 0.15s ease-in-out;
     cursor: pointer;
     
     &:hover {
-      background: #e9e9e9; // Equivalent to darken($secondary-color, 5%)
+      background: var(--ngt-hover-color);
     }
   }
   
@@ -256,6 +212,8 @@ $transition: all 0.15s ease-in-out;
   &.ngt-expand-header {
     width: 48px;
     text-align: center;
+    flex-shrink: 0;
+    flex-grow: 0;
   }
 }
 
@@ -303,123 +261,73 @@ $transition: all 0.15s ease-in-out;
 // Body container
 .ngt-body-container {
   position: relative;
-  
-  &.ngt-horizontal-scroll {
-    // Remove container-level horizontal scrolling to prevent double scrollbars
-    // Horizontal scrolling is now handled at the section level
-    overflow-x: hidden;
-    overflow-y: visible;
-  }
+  overflow: visible;
 }
 
-// Table body wrapper for organizing frozen and scrollable sections
-.ngt-table-body-wrapper {
-  display: flex;
-}
-
-// Body sections for frozen and scrollable content
-.ngt-body-section {
-  &.ngt-frozen-left,
-  &.ngt-frozen-right {
-    position: relative;
-    z-index: 50;
-    background: var(--ngt-row-bg, #ffffff);
-    flex-shrink: 0;
-    
-    &.ngt-frozen-left {
-      border-right: 1px solid var(--ngt-border-color, #e1e5e9);
-    }
-    
-    &.ngt-frozen-right {
-      border-left: 1px solid var(--ngt-border-color, #e1e5e9);
-    }
-  }
-  
-  &.ngt-scrollable {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    
-    // Ensure proper scrolling behavior when horizontal scroll is needed
-    &::-webkit-scrollbar {
-      height: 8px;
-    }
-    
-    &::-webkit-scrollbar-track {
-      background: var(--ngt-secondary-color, #f4f4f4);
-    }
-    
-    &::-webkit-scrollbar-thumb {
-      background: var(--ngt-border-color, #e1e5e9);
-      border-radius: 4px;
-    }
-    
-    &::-webkit-scrollbar-thumb:hover {
-      background: var(--ngt-text-muted, #86888a);
-    }
-  }
-}
-
-// Body table styling
-.ngt-body-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-// Row container - now handled by table row
+// Row container - holds all sections for a single row
 .ngt-row-container {
-  display: flex;
-  border-bottom: 1px solid var(--ngt-border-color, #e1e5e9);
+  display: grid;
+  grid-template-columns: max-content 1fr max-content;
+  border-bottom: 1px solid var(--ngt-border-color);
+  min-width: max-content; // Allow horizontal expansion for scrolling
+  width: 100%;
+  position: relative; // Ensure proper stacking context
   
   &:last-child {
     border-bottom: none;
   }
 }
 
-// Legacy row section styling - kept for backwards compatibility
 .ngt-row-section {
+  // Row sections (similar to header sections)
   &.ngt-frozen-left,
   &.ngt-frozen-right {
-    position: relative;
-    z-index: 50;
-    background: var(--ngt-row-bg, #ffffff);
-    flex-shrink: 0;
+    position: sticky; // Use sticky positioning for frozen columns
+    background: var(--ngt-background-color);
+    overflow: hidden; // Prevent content overflow
+    grid-column: 1; // Explicitly place in first column
     
     &.ngt-frozen-left {
-      border-right: 1px solid var(--ngt-border-color, #e1e5e9);
+      left: 0;
+      z-index: 150; // Higher z-index for frozen left body
+      border-right: 1px solid var(--ngt-border-color);
+      box-shadow: 2px 0 4px rgba(0,0,0,0.1); // Add shadow to show separation
     }
     
     &.ngt-frozen-right {
-      border-left: 1px solid var(--ngt-border-color, #e1e5e9);
+      right: 0;
+      z-index: 150; // Higher z-index for frozen right body
+      border-left: 1px solid var(--ngt-border-color);
+      box-shadow: -2px 0 4px rgba(0,0,0,0.1); // Add shadow to show separation
+      grid-column: 3; // Place in third column
     }
   }
   
   &.ngt-scrollable {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
+    overflow: visible; // No individual scrolling
+    z-index: 10; // Lower z-index for scrollable content
+    background: var(--ngt-background-color);
+    grid-column: 2; // Place in middle column
   }
 }
 
 .ngt-row {
-  // Base row styling
+  display: flex;
   min-height: $row-height;
   transition: $transition;
   cursor: pointer;
-  
-  // For div-based rows (legacy)
-  &:not(tr) {
-    display: flex;
-  }
+  width: 100%; // Ensure row takes full width of its container
+  box-sizing: border-box;
+  align-items: stretch; // Ensure cells stretch to row height
+  border-bottom: none; // Remove border since row-container handles it
   
   &:hover,
   &.ngt-hovered {
-    background: var(--ngt-hover-color, #f8f9fa);
+    background: var(--ngt-hover-color);
   }
   
   &.ngt-selected {
-    background: var(--ngt-selected-color, #e6f7ff);
+    background: var(--ngt-selected-color);
   }
   
   &:focus-within {
@@ -428,21 +336,15 @@ $transition: all 0.15s ease-in-out;
 }
 
 .ngt-cell {
-  // Base cell styling that works for both div and td
+  @include flex-center;
   padding: 0 $cell-padding;
-  border-right: 1px solid var(--ngt-border-color, #e1e5e9);
+  border-right: 1px solid var(--ngt-border-color);
   min-height: $row-height;
-  
-  // For div-based cells - use flexbox
-  &:not(td) {
-    @include flex-center;
-  }
-  
-  // For table cells - use table-cell behavior
-  &td {
-    vertical-align: middle;
-    text-align: left;
-  }
+  box-sizing: border-box;
+  flex-shrink: 0;
+  flex-grow: 0;
+  white-space: nowrap; // Prevent cell content from wrapping
+  overflow: hidden; // Hide overflow content
   
   &:last-child {
     border-right: none;
@@ -451,19 +353,10 @@ $transition: all 0.15s ease-in-out;
   &.ngt-selection-cell,
   &.ngt-expand-cell {
     width: 48px;
-    text-align: center;
-    
-    // For div-based cells
-    &:not(td) {
-      justify-content: center;
-      padding: 0;
-    }
-    
-    // For table cells
-    &td {
-      text-align: center;
-      padding: 0;
-    }
+    justify-content: center;
+    padding: 0;
+    flex-shrink: 0;
+    flex-grow: 0;
   }
   
   span {
@@ -476,15 +369,15 @@ $transition: all 0.15s ease-in-out;
 .ngt-checkbox {
   width: 16px;
   height: 16px;
-  border: 2px solid var(--ngt-border-color, #e1e5e9);
+  border: 2px solid var(--ngt-border-color);
   border-radius: 3px;
   cursor: pointer;
   transition: $transition;
-  background: var(--ngt-checkbox-bg, #ffffff);
+  background: var(--ngt-background-color);
   
   &:checked {
-    background: var(--ngt-primary-color, #007c89);
-    border-color: var(--ngt-primary-color, #007c89);
+    background: var(--ngt-primary-color);
+    border-color: var(--ngt-primary-color);
   }
   
   &:focus {
@@ -492,8 +385,8 @@ $transition: all 0.15s ease-in-out;
   }
   
   &:indeterminate {
-    background: var(--ngt-primary-color, #007c89);
-    border-color: var(--ngt-primary-color, #007c89);
+    background: var(--ngt-primary-color);
+    border-color: var(--ngt-primary-color);
     
     &::after {
       content: '−';
@@ -506,18 +399,18 @@ $transition: all 0.15s ease-in-out;
 .ngt-expand-button {
   width: 24px;
   height: 24px;
-  border: 1px solid var(--ngt-border-color, #e1e5e9);
+  border: 1px solid var(--ngt-border-color);
   border-radius: 50%;
-  background: var(--ngt-expand-button-bg, #ffffff);
+  background: var(--ngt-background-color);
+  color: var(--ngt-text-color);
   cursor: pointer;
   @include flex-center;
   justify-content: center;
   transition: $transition;
-  color: var(--ngt-text-color, #241c15);
   
   &:hover {
-    background: var(--ngt-hover-color, #f8f9fa);
-    border-color: var(--ngt-primary-color, #007c89);
+    background: var(--ngt-hover-color);
+    border-color: var(--ngt-primary-color);
   }
   
   &:focus {
@@ -525,8 +418,8 @@ $transition: all 0.15s ease-in-out;
   }
   
   &.ngt-expanded {
-    background: var(--ngt-primary-color, #007c89);
-    border-color: var(--ngt-primary-color, #007c89);
+    background: var(--ngt-primary-color);
+    border-color: var(--ngt-primary-color);
     color: white;
   }
 }
@@ -538,22 +431,20 @@ $transition: all 0.15s ease-in-out;
 }
 
 // Expanded row
+.ngt-expanded-row-container {
+  width: 100%;
+  border-bottom: 1px solid var(--ngt-border-color);
+  background: var(--ngt-expanded-background);
+}
+
 .ngt-expanded-row {
-  background: var(--ngt-expanded-row-bg, #fafbfc);
-  
-  // For div-based expanded rows (legacy)
-  &:not(tr) {
-    border-bottom: 1px solid var(--ngt-border-color, #e1e5e9);
-  }
-  
-  // For table-based expanded rows
-  &td {
-    border-bottom: 1px solid var(--ngt-border-color, #e1e5e9);
-  }
+  width: 100%;
+  border-bottom: 1px solid var(--ngt-border-color);
+  background: var(--ngt-expanded-background);
   
   .ngt-expanded-content {
     padding: 16px;
-    border-left: 4px solid var(--ngt-primary-color, #007c89);
+    border-left: 4px solid var(--ngt-primary-color);
   }
 }
 
@@ -562,7 +453,7 @@ $transition: all 0.15s ease-in-out;
   @include flex-center;
   justify-content: center;
   padding: 48px 24px;
-  color: $text-muted;
+  color: var(--ngt-text-muted);
   font-style: italic;
   
   p {
