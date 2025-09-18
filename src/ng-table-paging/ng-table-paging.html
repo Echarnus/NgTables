@@ -11,11 +11,11 @@
       </label>
       <select id="page-size-select" 
               class="ngt-pagination-select"
-              [value]="pageSize()"
+              [value]="pageSize().toString()"
               (change)="onPageSizeSelectChange($event)"
               [attr.aria-label]="'Change items per page, currently ' + pageSize()">
         @for (option of mergedConfig().pageSizeOptions; track option) {
-          <option [value]="option">{{ option }}</option>
+          <option [value]="option.toString()">{{ option }}</option>
         }
       </select>
     </div>

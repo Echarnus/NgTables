@@ -82,7 +82,7 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   
   // Pagination state
   private currentPage = signal<number>(1);
-  private pageSize = signal<number>(25);
+  private pageSize = signal<number>(25);  // This will be updated from config in constructor
   private pageSizeSetByUser = signal<boolean>(false);
   
   // Computed properties
@@ -200,20 +200,18 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
     // Initialize pagination settings from config - ensure initial page size is properly set
     effect(() => {
       const config = this.config();
-      // Only set from config if:
-      // 1. Config has a pageSize
-      // 2. User hasn't manually set a page size yet
-      // 3. The config pageSize is different from current pageSize
+      
+      // Initialize from config if available and user hasn't manually set page size
       if (config.pagination?.pageSize && !this.pageSizeSetByUser()) {
-        // Always use the config pageSize for initial setup, but not for subsequent config changes
-        // unless the user hasn't made any manual changes
         const configPageSize = config.pagination.pageSize;
+        
+        // Update pageSize to match config if different
         if (configPageSize !== this.pageSize()) {
           this.pageSize.set(configPageSize);
           this.currentPage.set(1); // Reset to first page when page size changes
         }
       }
-    });
+    }, { allowSignalWrites: true });
     
     // Sync scroll between header and body
     effect(() => {
