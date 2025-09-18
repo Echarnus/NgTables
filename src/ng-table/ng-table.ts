@@ -357,13 +357,20 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
 
   private syncSection(container: HTMLElement, sectionClass: string): void {
     const headerSection = container.querySelector(`.ngt-header-section.${sectionClass}`);
-    const bodySection = container.querySelector(`.ngt-row-section.${sectionClass}`);
+    
+    // Update to look for the new body section structure
+    const bodySection = container.querySelector(`.ngt-body-section.${sectionClass}`) ||
+                       container.querySelector(`.ngt-row-section.${sectionClass}`); // Fallback for legacy
     
     if (!headerSection || !bodySection) return;
 
     // Get header and body cells
     const headerCells = Array.from(headerSection.querySelectorAll('.ngt-header-cell')) as HTMLElement[];
-    const firstBodyRow = bodySection.querySelector('.ngt-row');
+    
+    // For table-based structure, look in the first tbody row
+    const firstBodyTable = bodySection.querySelector('.ngt-body-table');
+    const firstBodyRow = firstBodyTable?.querySelector('tbody tr.ngt-row') ||
+                        bodySection.querySelector('.ngt-row'); // Fallback for legacy div-based
     const bodyCells = Array.from(firstBodyRow?.querySelectorAll('.ngt-cell') || []) as HTMLElement[];
 
     if (headerCells.length === 0 || bodyCells.length === 0 || headerCells.length !== bodyCells.length) {
@@ -562,6 +569,22 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
       index: index,
       rowId: rowId
     };
+  }
+
+  getLeftFrozenColumnCount(): number {
+    let count = this.leftFrozenColumns().length;
+    
+    // Add selection column if multi-select is enabled
+    if (this.config().selectable && this.config().multiSelect) {
+      count++;
+    }
+    
+    // Add expand column if expandable rows are enabled
+    if (this.config().expandableRows) {
+      count++;
+    }
+    
+    return count;
   }
 
   // Pagination event handlers

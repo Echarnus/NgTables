@@ -209,179 +209,223 @@
 
     <!-- Data Rows -->
     @if (paginatedData().length > 0) {
-      @for (row of paginatedData(); track trackByRowId($index, row); let rowIndex = $index) {
-        @let rowId = getRowId(row, rowIndex);
-        
-        <!-- Main Row -->
-        <div class="ngt-row-container">
-          <!-- Frozen Left Cells -->
-          @if (leftFrozenColumns().length > 0 || (config().selectable && config().multiSelect) || config().expandableRows) {
-            <div class="ngt-row-section ngt-frozen-left" 
-                 [style.width.px]="leftFrozenWidth()">
-              <div class="ngt-row"
-                   [class.ngt-selected]="isRowSelected(rowId)"
-                   [class.ngt-hovered]="isRowHovered(rowId)"
-                   [style.height]="config().rowHeight || 'auto'"
-                   role="row"
-                   [attr.aria-selected]="config().selectable ? isRowSelected(rowId) : null"
-                   (click)="onRowClick(row, rowId)"
-                   (mouseenter)="onRowHover(rowId)"
-                   (mouseleave)="onRowHover(null)">
-                
-                <!-- Selection Cell for Multi-Select Only -->
-                @if (config().selectable && config().multiSelect) {
-                  <div class="ngt-cell ngt-selection-cell" role="gridcell">
-                    <input type="checkbox" 
-                           class="ngt-checkbox"
-                           [checked]="isRowSelected(rowId)"
-                           (change)="onRowSelect(rowId, $event.target?.checked || false)"
-                           [attr.aria-label]="'Select row ' + (rowIndex + 1)"
-                           tabindex="0">
-                  </div>
-                }
-                
-                <!-- Expand Cell -->
-                @if (config().expandableRows) {
-                  <div class="ngt-cell ngt-expand-cell" role="gridcell">
-                    <button class="ngt-expand-button"
-                            type="button"
-                            [class.ngt-expanded]="isRowExpanded(rowId)"
-                            (click)="onRowExpand(rowId, row); $event.stopPropagation()"
-                            [attr.aria-label]="isRowExpanded(rowId) ? 
-                              'Collapse row ' + (rowIndex + 1) : 
-                              'Expand row ' + (rowIndex + 1)"
-                            [attr.aria-expanded]="isRowExpanded(rowId)">
-                      <span class="ngt-expand-icon" aria-hidden="true">
-                        {{ isRowExpanded(rowId) ? '−' : '+' }}
-                      </span>
-                    </button>
-                  </div>
-                }
-                
-                <!-- Frozen Left Data Cells -->
-                @for (column of leftFrozenColumns(); track trackByColumnId($index, column)) {
-                  <div class="ngt-cell"
-                       [class]="column.cssClass"
-                       [style.width]="column.width"
-                       [style.min-width]="column.minWidth"
-                       [style.max-width]="column.maxWidth"
-                       role="gridcell"
-                       (click)="onCellClick(getCellValue(row, column), row, column); $event.stopPropagation()">
-                    
-                    @if (column.useTemplate && cellTemplate) {
-                      <ng-container 
-                        [ngTemplateOutlet]="cellTemplate"
-                        [ngTemplateOutletContext]="getColumnTemplateContext(row, column, rowIndex, rowId)">
-                      </ng-container>
-                    } @else if (column.cellRenderer) {
-                      <div [innerHTML]="column.cellRenderer(getCellValue(row, column), row, column)"></div>
-                    } @else {
-                      <span>{{ getCellValue(row, column) }}</span>
-                    }
-                  </div>
-                }
-              </div>
-            </div>
-          }
-
-          <!-- Scrollable Cells -->
-          <div class="ngt-row-section ngt-scrollable"
-               #scrollableBody
-               (scroll)="syncHorizontalScroll($event)">
-            <div class="ngt-row"
-                 [class.ngt-selected]="isRowSelected(rowId)"
-                 [class.ngt-hovered]="isRowHovered(rowId)"
-                 [style.height]="config().rowHeight || 'auto'"
-                 role="row"
-                 [attr.aria-selected]="config().selectable ? isRowSelected(rowId) : null"
-                 (click)="onRowClick(row, rowId)"
-                 (mouseenter)="onRowHover(rowId)"
-                 (mouseleave)="onRowHover(null)">
-              
-              @for (column of scrollableColumns(); track trackByColumnId($index, column)) {
-                <div class="ngt-cell"
-                     [class]="column.cssClass"
-                     [style.width]="column.width"
-                     [style.min-width]="column.minWidth"
-                     [style.max-width]="column.maxWidth"
-                     role="gridcell"
-                     (click)="onCellClick(getCellValue(row, column), row, column); $event.stopPropagation()">
+      <div class="ngt-table-body-wrapper">
+        <!-- Frozen Left Body -->
+        @if (leftFrozenColumns().length > 0 || (config().selectable && config().multiSelect) || config().expandableRows) {
+          <div class="ngt-body-section ngt-frozen-left" 
+               [style.width.px]="leftFrozenWidth()">
+            <table class="ngt-body-table">
+              <tbody>
+                @for (row of paginatedData(); track trackByRowId($index, row); let rowIndex = $index) {
+                  @let rowId = getRowId(row, rowIndex);
                   
-                  @if (column.useTemplate && cellTemplate) {
-                    <ng-container 
-                      [ngTemplateOutlet]="cellTemplate"
-                      [ngTemplateOutletContext]="getColumnTemplateContext(row, column, rowIndex, rowId)">
-                    </ng-container>
-                  } @else if (column.cellRenderer) {
-                    <div [innerHTML]="column.cellRenderer(getCellValue(row, column), row, column)"></div>
-                  } @else {
-                    <span>{{ getCellValue(row, column) }}</span>
-                  }
-                </div>
-              }
-            </div>
-          </div>
-
-          <!-- Frozen Right Cells -->
-          @if (rightFrozenColumns().length > 0) {
-            <div class="ngt-row-section ngt-frozen-right" 
-                 [style.width.px]="rightFrozenWidth()">
-              <div class="ngt-row"
-                   [class.ngt-selected]="isRowSelected(rowId)"
-                   [class.ngt-hovered]="isRowHovered(rowId)"
-                   [style.height]="config().rowHeight || 'auto'"
-                   role="row"
-                   [attr.aria-selected]="config().selectable ? isRowSelected(rowId) : null"
-                   (click)="onRowClick(row, rowId)"
-                   (mouseenter)="onRowHover(rowId)"
-                   (mouseleave)="onRowHover(null)">
-                
-                @for (column of rightFrozenColumns(); track trackByColumnId($index, column)) {
-                  <div class="ngt-cell"
-                       [class]="column.cssClass"
-                       [style.width]="column.width"
-                       [style.min-width]="column.minWidth"
-                       [style.max-width]="column.maxWidth"
-                       role="gridcell"
-                       (click)="onCellClick(getCellValue(row, column), row, column); $event.stopPropagation()">
+                  <!-- Main Row -->
+                  <tr class="ngt-row"
+                      [class.ngt-selected]="isRowSelected(rowId)"
+                      [class.ngt-hovered]="isRowHovered(rowId)"
+                      [style.height]="config().rowHeight || 'auto'"
+                      [attr.aria-selected]="config().selectable ? isRowSelected(rowId) : null"
+                      (click)="onRowClick(row, rowId)"
+                      (mouseenter)="onRowHover(rowId)"
+                      (mouseleave)="onRowHover(null)">
                     
-                    @if (column.useTemplate && cellTemplate) {
-                      <ng-container 
-                        [ngTemplateOutlet]="cellTemplate"
-                        [ngTemplateOutletContext]="getColumnTemplateContext(row, column, rowIndex, rowId)">
-                      </ng-container>
-                    } @else if (column.cellRenderer) {
-                      <div [innerHTML]="column.cellRenderer(getCellValue(row, column), row, column)"></div>
-                    } @else {
-                      <span>{{ getCellValue(row, column) }}</span>
+                    <!-- Selection Cell for Multi-Select Only -->
+                    @if (config().selectable && config().multiSelect) {
+                      <td class="ngt-cell ngt-selection-cell">
+                        <input type="checkbox" 
+                               class="ngt-checkbox"
+                               [checked]="isRowSelected(rowId)"
+                               (change)="onRowSelect(rowId, $event.target?.checked || false)"
+                               [attr.aria-label]="'Select row ' + (rowIndex + 1)"
+                               tabindex="0">
+                      </td>
                     }
-                  </div>
-                }
-              </div>
-            </div>
-          }
-        </div>
+                    
+                    <!-- Expand Cell -->
+                    @if (config().expandableRows) {
+                      <td class="ngt-cell ngt-expand-cell">
+                        <button class="ngt-expand-button"
+                                type="button"
+                                [class.ngt-expanded]="isRowExpanded(rowId)"
+                                (click)="onRowExpand(rowId, row); $event.stopPropagation()"
+                                [attr.aria-label]="isRowExpanded(rowId) ? 
+                                  'Collapse row ' + (rowIndex + 1) : 
+                                  'Expand row ' + (rowIndex + 1)"
+                                [attr.aria-expanded]="isRowExpanded(rowId)">
+                          <span class="ngt-expand-icon" aria-hidden="true">
+                            {{ isRowExpanded(rowId) ? '−' : '+' }}
+                          </span>
+                        </button>
+                      </td>
+                    }
+                    
+                    <!-- Frozen Left Data Cells -->
+                    @for (column of leftFrozenColumns(); track trackByColumnId($index, column)) {
+                      <td class="ngt-cell"
+                          [class]="column.cssClass"
+                          [style.width]="column.width"
+                          [style.min-width]="column.minWidth"
+                          [style.max-width]="column.maxWidth"
+                          (click)="onCellClick(getCellValue(row, column), row, column); $event.stopPropagation()">
+                        
+                        @if (column.useTemplate && cellTemplate) {
+                          <ng-container 
+                            [ngTemplateOutlet]="cellTemplate"
+                            [ngTemplateOutletContext]="getColumnTemplateContext(row, column, rowIndex, rowId)">
+                          </ng-container>
+                        } @else if (column.cellRenderer) {
+                          <div [innerHTML]="column.cellRenderer(getCellValue(row, column), row, column)"></div>
+                        } @else {
+                          <span>{{ getCellValue(row, column) }}</span>
+                        }
+                      </td>
+                    }
+                  </tr>
 
-        <!-- Expanded Row Content -->
-        @if (config().expandableRows && isRowExpanded(rowId)) {
-          <div class="ngt-expanded-row" 
-               role="region"
-               [attr.aria-label]="'Expanded content for row ' + (rowIndex + 1)">
-            <div class="ngt-expanded-content">
-              <!-- Template-based expandable content (preferred) -->
-              @if (expandedRowTemplate) {
-                <ng-container 
-                  [ngTemplateOutlet]="expandedRowTemplate"
-                  [ngTemplateOutletContext]="getExpandedRowContext(row, rowIndex, rowId)">
-                </ng-container>
-              } @else {
-                <!-- Fallback to content projection for backward compatibility -->
-                <ng-content select="[slot=expanded-row]"></ng-content>
-              }
-            </div>
+                  <!-- Expanded Row Content for Frozen Left -->
+                  @if (config().expandableRows && isRowExpanded(rowId)) {
+                    <tr class="ngt-expanded-row">
+                      <td [attr.colspan]="getLeftFrozenColumnCount()" class="ngt-expanded-content">
+                        @if (expandedRowTemplate) {
+                          <ng-container 
+                            [ngTemplateOutlet]="expandedRowTemplate"
+                            [ngTemplateOutletContext]="getExpandedRowContext(row, rowIndex, rowId)">
+                          </ng-container>
+                        } @else {
+                          <ng-content select="[slot=expanded-row]"></ng-content>
+                        }
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
           </div>
         }
-      }
+
+        <!-- Scrollable Body -->
+        <div class="ngt-body-section ngt-scrollable"
+             #scrollableBody
+             (scroll)="syncHorizontalScroll($event)">
+          <table class="ngt-body-table">
+            <tbody>
+              @for (row of paginatedData(); track trackByRowId($index, row); let rowIndex = $index) {
+                @let rowId = getRowId(row, rowIndex);
+                
+                <!-- Main Row -->
+                <tr class="ngt-row"
+                    [class.ngt-selected]="isRowSelected(rowId)"
+                    [class.ngt-hovered]="isRowHovered(rowId)"
+                    [style.height]="config().rowHeight || 'auto'"
+                    [attr.aria-selected]="config().selectable ? isRowSelected(rowId) : null"
+                    (click)="onRowClick(row, rowId)"
+                    (mouseenter)="onRowHover(rowId)"
+                    (mouseleave)="onRowHover(null)">
+                  
+                  @for (column of scrollableColumns(); track trackByColumnId($index, column)) {
+                    <td class="ngt-cell"
+                        [class]="column.cssClass"
+                        [style.width]="column.width"
+                        [style.min-width]="column.minWidth"
+                        [style.max-width]="column.maxWidth"
+                        (click)="onCellClick(getCellValue(row, column), row, column); $event.stopPropagation()">
+                      
+                      @if (column.useTemplate && cellTemplate) {
+                        <ng-container 
+                          [ngTemplateOutlet]="cellTemplate"
+                          [ngTemplateOutletContext]="getColumnTemplateContext(row, column, rowIndex, rowId)">
+                        </ng-container>
+                      } @else if (column.cellRenderer) {
+                        <div [innerHTML]="column.cellRenderer(getCellValue(row, column), row, column)"></div>
+                      } @else {
+                        <span>{{ getCellValue(row, column) }}</span>
+                      }
+                    </td>
+                  }
+                </tr>
+
+                <!-- Expanded Row Content for Scrollable -->
+                @if (config().expandableRows && isRowExpanded(rowId)) {
+                  <tr class="ngt-expanded-row">
+                    <td [attr.colspan]="scrollableColumns().length" class="ngt-expanded-content">
+                      @if (expandedRowTemplate) {
+                        <ng-container 
+                          [ngTemplateOutlet]="expandedRowTemplate"
+                          [ngTemplateOutletContext]="getExpandedRowContext(row, rowIndex, rowId)">
+                        </ng-container>
+                      } @else {
+                        <ng-content select="[slot=expanded-row]"></ng-content>
+                      }
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Frozen Right Body -->
+        @if (rightFrozenColumns().length > 0) {
+          <div class="ngt-body-section ngt-frozen-right" 
+               [style.width.px]="rightFrozenWidth()">
+            <table class="ngt-body-table">
+              <tbody>
+                @for (row of paginatedData(); track trackByRowId($index, row); let rowIndex = $index) {
+                  @let rowId = getRowId(row, rowIndex);
+                  
+                  <!-- Main Row -->
+                  <tr class="ngt-row"
+                      [class.ngt-selected]="isRowSelected(rowId)"
+                      [class.ngt-hovered]="isRowHovered(rowId)"
+                      [style.height]="config().rowHeight || 'auto'"
+                      [attr.aria-selected]="config().selectable ? isRowSelected(rowId) : null"
+                      (click)="onRowClick(row, rowId)"
+                      (mouseenter)="onRowHover(rowId)"
+                      (mouseleave)="onRowHover(null)">
+                    
+                    @for (column of rightFrozenColumns(); track trackByColumnId($index, column)) {
+                      <td class="ngt-cell"
+                          [class]="column.cssClass"
+                          [style.width]="column.width"
+                          [style.min-width]="column.minWidth"
+                          [style.max-width]="column.maxWidth"
+                          (click)="onCellClick(getCellValue(row, column), row, column); $event.stopPropagation()">
+                        
+                        @if (column.useTemplate && cellTemplate) {
+                          <ng-container 
+                            [ngTemplateOutlet]="cellTemplate"
+                            [ngTemplateOutletContext]="getColumnTemplateContext(row, column, rowIndex, rowId)">
+                          </ng-container>
+                        } @else if (column.cellRenderer) {
+                          <div [innerHTML]="column.cellRenderer(getCellValue(row, column), row, column)"></div>
+                        } @else {
+                          <span>{{ getCellValue(row, column) }}</span>
+                        }
+                      </td>
+                    }
+                  </tr>
+
+                  <!-- Expanded Row Content for Frozen Right -->
+                  @if (config().expandableRows && isRowExpanded(rowId)) {
+                    <tr class="ngt-expanded-row">
+                      <td [attr.colspan]="rightFrozenColumns().length" class="ngt-expanded-content">
+                        @if (expandedRowTemplate) {
+                          <ng-container 
+                            [ngTemplateOutlet]="expandedRowTemplate"
+                            [ngTemplateOutletContext]="getExpandedRowContext(row, rowIndex, rowId)">
+                          </ng-container>
+                        } @else {
+                          <ng-content select="[slot=expanded-row]"></ng-content>
+                        }
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
     }
   </div>
 </div>

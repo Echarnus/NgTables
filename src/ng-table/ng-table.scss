@@ -292,7 +292,44 @@ $transition: all 0.15s ease-in-out;
   }
 }
 
-// Row container
+// Table body wrapper for organizing frozen and scrollable sections
+.ngt-table-body-wrapper {
+  display: flex;
+}
+
+// Body sections for frozen and scrollable content
+.ngt-body-section {
+  &.ngt-frozen-left,
+  &.ngt-frozen-right {
+    position: relative;
+    z-index: 50;
+    background: var(--ngt-row-bg, #ffffff);
+    flex-shrink: 0;
+    
+    &.ngt-frozen-left {
+      border-right: 1px solid var(--ngt-border-color, #e1e5e9);
+    }
+    
+    &.ngt-frozen-right {
+      border-left: 1px solid var(--ngt-border-color, #e1e5e9);
+    }
+  }
+  
+  &.ngt-scrollable {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+}
+
+// Body table styling
+.ngt-body-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+// Row container - now handled by table row
 .ngt-row-container {
   display: flex;
   border-bottom: 1px solid var(--ngt-border-color, #e1e5e9);
@@ -302,6 +339,7 @@ $transition: all 0.15s ease-in-out;
   }
 }
 
+// Legacy row section styling - kept for backwards compatibility
 .ngt-row-section {
   &.ngt-frozen-left,
   &.ngt-frozen-right {
@@ -327,10 +365,15 @@ $transition: all 0.15s ease-in-out;
 }
 
 .ngt-row {
-  display: flex;
+  // Base row styling
   min-height: $row-height;
   transition: $transition;
   cursor: pointer;
+  
+  // For div-based rows (legacy)
+  &:not(tr) {
+    display: flex;
+  }
   
   &:hover,
   &.ngt-hovered {
@@ -347,10 +390,21 @@ $transition: all 0.15s ease-in-out;
 }
 
 .ngt-cell {
-  @include flex-center;
+  // Base cell styling that works for both div and td
   padding: 0 $cell-padding;
   border-right: 1px solid var(--ngt-border-color, #e1e5e9);
   min-height: $row-height;
+  
+  // For div-based cells - use flexbox
+  &:not(td) {
+    @include flex-center;
+  }
+  
+  // For table cells - use table-cell behavior
+  &td {
+    vertical-align: middle;
+    text-align: left;
+  }
   
   &:last-child {
     border-right: none;
@@ -359,8 +413,19 @@ $transition: all 0.15s ease-in-out;
   &.ngt-selection-cell,
   &.ngt-expand-cell {
     width: 48px;
-    justify-content: center;
-    padding: 0;
+    text-align: center;
+    
+    // For div-based cells
+    &:not(td) {
+      justify-content: center;
+      padding: 0;
+    }
+    
+    // For table cells
+    &td {
+      text-align: center;
+      padding: 0;
+    }
   }
   
   span {
@@ -436,8 +501,17 @@ $transition: all 0.15s ease-in-out;
 
 // Expanded row
 .ngt-expanded-row {
-  border-bottom: 1px solid var(--ngt-border-color, #e1e5e9);
   background: var(--ngt-expanded-row-bg, #fafbfc);
+  
+  // For div-based expanded rows (legacy)
+  &:not(tr) {
+    border-bottom: 1px solid var(--ngt-border-color, #e1e5e9);
+  }
+  
+  // For table-based expanded rows
+  &td {
+    border-bottom: 1px solid var(--ngt-border-color, #e1e5e9);
+  }
   
   .ngt-expanded-content {
     padding: 16px;
