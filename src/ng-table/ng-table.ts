@@ -83,6 +83,7 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   // Pagination state
   private currentPage = signal<number>(1);
   private pageSize = signal<number>(25);
+  private pageSizeSetByUser = signal<boolean>(false);
   
   // Computed properties
   paginationState = computed((): PaginationState => {
@@ -196,10 +197,10 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   private resizeObserver?: ResizeObserver;
 
   constructor() {
-    // Initialize pagination settings from config
+    // Initialize pagination settings from config - only set initial page size if not set by user
     effect(() => {
       const config = this.config();
-      if (config.pagination?.pageSize && config.pagination.pageSize !== this.pageSize()) {
+      if (config.pagination?.pageSize && !this.pageSizeSetByUser() && config.pagination.pageSize !== this.pageSize()) {
         this.pageSize.set(config.pagination.pageSize);
         this.currentPage.set(1); // Reset to first page when page size changes
       }
@@ -570,6 +571,7 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   }
 
   onPageSizeChange(event: PageSizeChangeEvent): void {
+    this.pageSizeSetByUser.set(true); // Mark that user has set page size
     this.pageSize.set(event.pageSize);
     this.currentPage.set(event.page);
     this.pageSizeChange.emit(event);
