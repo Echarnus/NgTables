@@ -233,6 +233,14 @@ export class App {
   constrainWidth = signal(false);
   makeFrozenColumnsVisible = signal(false);
   useRowTemplate = signal(false);
+  isDarkTheme = signal(false);
+
+  constructor() {
+    // Load theme preference from localStorage on startup
+    const savedTheme = localStorage.getItem('ngt-theme');
+    this.isDarkTheme.set(savedTheme === 'dark');
+    this.applyTheme();
+  }
 
   useTemplateBasedColumns(): boolean {
     return this.useRowTemplate();
@@ -265,6 +273,24 @@ export class App {
 
   toggleRowTemplate(): void {
     this.useRowTemplate.set(!this.useRowTemplate());
+  }
+
+  toggleTheme(): void {
+    this.isDarkTheme.set(!this.isDarkTheme());
+    this.applyTheme();
+    // Save theme preference to localStorage
+    localStorage.setItem('ngt-theme', this.isDarkTheme() ? 'dark' : 'light');
+  }
+
+  private applyTheme(): void {
+    const htmlElement = document.documentElement;
+    if (this.isDarkTheme()) {
+      htmlElement.setAttribute('data-theme', 'dark');
+      htmlElement.classList.add('ngt-theme-dark');
+    } else {
+      htmlElement.removeAttribute('data-theme');
+      htmlElement.classList.remove('ngt-theme-dark');
+    }
   }
 
   // Event handlers
