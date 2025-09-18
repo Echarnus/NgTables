@@ -37,6 +37,23 @@
   }
 }
 
+// Dark theme class for manual toggling
+.ngt-theme-dark {
+  --ngt-primary-color: #00a3b3;
+  --ngt-secondary-color: #2a2a2a;
+  --ngt-border-color: #404040;
+  --ngt-text-color: #ffffff;
+  --ngt-text-muted: #b0b0b0;
+  --ngt-hover-color: #333333;
+  --ngt-selected-color: #1e3a5f;
+  --ngt-focus-color: #4d90fe;
+  --ngt-shadow-color: rgba(0, 0, 0, 0.3);
+  --ngt-background-color: #1a1a1a;
+  --ngt-header-background: #2a2a2a;
+  --ngt-loading-overlay: rgba(26, 26, 26, 0.8);
+  --ngt-expanded-background: #262626;
+}
+
 // Variables using custom properties
 $primary-color: var(--ngt-primary-color);
 $secondary-color: var(--ngt-secondary-color);
@@ -88,10 +105,19 @@ $transition: all 0.15s ease-in-out;
 }
 
 // Table content wrapper - single scrollable container
-.ngt-table-content {
+.ngt-table-wrapper {
   overflow-x: auto;
   overflow-y: visible;
   width: 100%;
+}
+
+// Single table structure with frozen column support
+.ngt-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: var(--ngt-background-color);
 }
 
 // Loading overlay
@@ -121,63 +147,19 @@ $transition: all 0.15s ease-in-out;
   100% { transform: rotate(360deg); }
 }
 
-// Header container
-.ngt-header-container {
-  display: grid;
-  grid-template-columns: max-content 1fr max-content;
+// Header styles for single table
+.ngt-header {
   background: var(--ngt-header-background);
   border-bottom: 2px solid var(--ngt-border-color);
   position: relative;
   z-index: 100;
-  min-width: max-content; // Allow horizontal expansion
-  width: 100%;
   
   &.ngt-sticky {
     position: sticky;
     top: 0;
     z-index: 200;
-    // Ensure smooth transitions and proper layering
     box-shadow: 0 2px 4px var(--ngt-shadow-color);
   }
-}
-
-.ngt-header-section {
-  &.ngt-frozen-left,
-  &.ngt-frozen-right {
-    position: sticky; // Use sticky positioning for frozen headers
-    background: var(--ngt-header-background);
-    overflow: hidden; // Prevent content overflow
-    grid-column: 1; // Explicitly place in first column
-    
-    &.ngt-frozen-left {
-      left: 0;
-      z-index: 250; // Higher z-index for frozen left header
-      border-right: 1px solid var(--ngt-border-color);
-      box-shadow: 2px 0 4px rgba(0,0,0,0.1); // Add shadow to show separation
-    }
-    
-    &.ngt-frozen-right {
-      right: 0;
-      z-index: 250; // Higher z-index for frozen right header
-      border-left: 1px solid var(--ngt-border-color);
-      box-shadow: -2px 0 4px rgba(0,0,0,0.1); // Add shadow to show separation
-      grid-column: 3; // Place in third column
-    }
-  }
-  
-  &.ngt-scrollable {
-    overflow: visible; // No individual scrolling
-    z-index: 50; // Lower z-index for scrollable header
-    background: var(--ngt-header-background);
-    grid-column: 2; // Place in middle column
-  }
-}
-
-.ngt-header-table {
-  width: max-content; // Allow table to expand based on content
-  min-width: 100%; // Ensure table is at least as wide as container
-  border-collapse: collapse;
-  table-layout: fixed; // Use fixed layout for consistent column alignment
 }
 
 .ngt-header-row {
@@ -194,10 +176,27 @@ $transition: all 0.15s ease-in-out;
   background: var(--ngt-header-background);
   position: relative;
   box-sizing: border-box;
-  overflow: hidden; // Prevent header content overflow
+  overflow: hidden;
   
   &:last-child {
     border-right: none;
+  }
+  
+  // Frozen column styling
+  &.ngt-frozen-left {
+    position: sticky;
+    left: 0;
+    z-index: 250;
+    border-right: 1px solid var(--ngt-border-color);
+    box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+  }
+  
+  &.ngt-frozen-right {
+    position: sticky;
+    right: 0;
+    z-index: 250;
+    border-left: 1px solid var(--ngt-border-color);
+    box-shadow: -2px 0 4px rgba(0,0,0,0.1);
   }
   
   &.ngt-sortable {
@@ -264,62 +263,20 @@ $transition: all 0.15s ease-in-out;
   overflow: visible;
 }
 
-// Row container - holds all sections for a single row
-.ngt-row-container {
-  display: grid;
-  grid-template-columns: max-content 1fr max-content;
+// Table body styles for single table
+.ngt-body {
+  background: var(--ngt-background-color);
+}
+
+.ngt-row {
+  min-height: $row-height;
+  transition: $transition;
+  cursor: pointer;
   border-bottom: 1px solid var(--ngt-border-color);
-  min-width: max-content; // Allow horizontal expansion for scrolling
-  width: 100%;
-  position: relative; // Ensure proper stacking context
   
   &:last-child {
     border-bottom: none;
   }
-}
-
-.ngt-row-section {
-  // Row sections (similar to header sections)
-  &.ngt-frozen-left,
-  &.ngt-frozen-right {
-    position: sticky; // Use sticky positioning for frozen columns
-    background: var(--ngt-background-color);
-    overflow: hidden; // Prevent content overflow
-    grid-column: 1; // Explicitly place in first column
-    
-    &.ngt-frozen-left {
-      left: 0;
-      z-index: 150; // Higher z-index for frozen left body
-      border-right: 1px solid var(--ngt-border-color);
-      box-shadow: 2px 0 4px rgba(0,0,0,0.1); // Add shadow to show separation
-    }
-    
-    &.ngt-frozen-right {
-      right: 0;
-      z-index: 150; // Higher z-index for frozen right body
-      border-left: 1px solid var(--ngt-border-color);
-      box-shadow: -2px 0 4px rgba(0,0,0,0.1); // Add shadow to show separation
-      grid-column: 3; // Place in third column
-    }
-  }
-  
-  &.ngt-scrollable {
-    overflow: visible; // No individual scrolling
-    z-index: 10; // Lower z-index for scrollable content
-    background: var(--ngt-background-color);
-    grid-column: 2; // Place in middle column
-  }
-}
-
-.ngt-row {
-  display: flex;
-  min-height: $row-height;
-  transition: $transition;
-  cursor: pointer;
-  width: 100%; // Ensure row takes full width of its container
-  box-sizing: border-box;
-  align-items: stretch; // Ensure cells stretch to row height
-  border-bottom: none; // Remove border since row-container handles it
   
   &:hover,
   &.ngt-hovered {
@@ -341,13 +298,29 @@ $transition: all 0.15s ease-in-out;
   border-right: 1px solid var(--ngt-border-color);
   min-height: $row-height;
   box-sizing: border-box;
-  flex-shrink: 0;
-  flex-grow: 0;
-  white-space: nowrap; // Prevent cell content from wrapping
-  overflow: hidden; // Hide overflow content
+  white-space: nowrap;
+  overflow: hidden;
+  background: var(--ngt-background-color);
   
   &:last-child {
     border-right: none;
+  }
+  
+  // Frozen column styling
+  &.ngt-frozen-left {
+    position: sticky;
+    left: 0;
+    z-index: 150;
+    border-right: 1px solid var(--ngt-border-color);
+    box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+  }
+  
+  &.ngt-frozen-right {
+    position: sticky;
+    right: 0;
+    z-index: 150;
+    border-left: 1px solid var(--ngt-border-color);
+    box-shadow: -2px 0 4px rgba(0,0,0,0.1);
   }
   
   &.ngt-selection-cell,
@@ -355,8 +328,7 @@ $transition: all 0.15s ease-in-out;
     width: 48px;
     justify-content: center;
     padding: 0;
-    flex-shrink: 0;
-    flex-grow: 0;
+    text-align: center;
   }
   
   span {
@@ -430,25 +402,34 @@ $transition: all 0.15s ease-in-out;
   line-height: 1;
 }
 
-// Expanded row
-.ngt-expanded-row-container {
-  width: 100%;
-  border-bottom: 1px solid var(--ngt-border-color);
-  background: var(--ngt-expanded-background);
-}
-
+// Expanded row styles for single table
 .ngt-expanded-row {
-  width: 100%;
   border-bottom: 1px solid var(--ngt-border-color);
   background: var(--ngt-expanded-background);
-  
-  .ngt-expanded-content {
-    padding: 16px;
-    border-left: 4px solid var(--ngt-primary-color);
-  }
 }
 
-// Empty state
+.ngt-expanded-cell {
+  padding: 0;
+  border-right: none;
+  background: var(--ngt-expanded-background);
+}
+
+.ngt-expanded-content {
+  padding: 16px;
+  border-left: 4px solid var(--ngt-primary-color);
+  background: var(--ngt-expanded-background);
+}
+
+// Empty state for single table
+.ngt-empty-row {
+  border-bottom: none;
+}
+
+.ngt-empty-cell {
+  border-right: none;
+  padding: 0;
+}
+
 .ngt-empty-state {
   @include flex-center;
   justify-content: center;
