@@ -466,9 +466,69 @@ $transition: all 0.15s ease-in-out;
     }
   }
   
-  span {
+  // Default cell content (text nodes, spans without specific overflow classes)
+  > span:not(.ngt-cell-content) {
     @include text-truncate;
     width: 100%;
+  }
+  
+  // Overflow strategy classes for cell content
+  .ngt-cell-content {
+    width: 100%;
+    
+    // Default ellipsis overflow (same as text-truncate mixin)
+    &.ngt-overflow-ellipsis {
+      @include text-truncate;
+    }
+    
+    // Multiline overflow allows text wrapping
+    &.ngt-overflow-multiline {
+      white-space: normal;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    
+    // Expandable overflow shows limited text with expand/collapse
+    &.ngt-overflow-expandable {
+      position: relative;
+      
+      &.ngt-collapsed {
+        @include text-truncate;
+        
+        &::after {
+          content: '...';
+          position: absolute;
+          right: 0;
+          background: inherit;
+          padding-left: 4px;
+        }
+      }
+      
+      &.ngt-expanded {
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+    }
+  }
+  
+  // Expandable toggle button
+  .ngt-expand-toggle {
+    background: none;
+    border: none;
+    color: var(--ngt-primary-color, #007c89);
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 4px;
+    padding: 0;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+    
+    &:focus {
+      @include focus-outline;
+    }
   }
 }
 

@@ -11,6 +11,8 @@ export interface ColumnDefinition<T = any> {
   minWidth?: string;
   /** Maximum column width (CSS value) */
   maxWidth?: string;
+  /** Text overflow strategy for cell content */
+  overflow?: 'ellipsis' | 'multiline' | 'expandable';
   /** Whether the column is sortable */
   sortable?: boolean;
   /** Whether the column is frozen (left or right) */

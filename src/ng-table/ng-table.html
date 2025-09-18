@@ -276,7 +276,24 @@
                         } @else if (column.cellRenderer) {
                           <div [innerHTML]="column.cellRenderer(getCellValue(row, column), row, column)"></div>
                         } @else {
-                          <span>{{ getCellValue(row, column) }}</span>
+                          @if (column.overflow === 'expandable') {
+                            <span class="ngt-cell-content" 
+                                  [class]="getCellOverflowClass(column)"
+                                  [class.ngt-collapsed]="!isCellExpanded(rowId, column.id)"
+                                  [class.ngt-expanded]="isCellExpanded(rowId, column.id)">
+                              {{ getCellValue(row, column) }}
+                            </span>
+                            <button class="ngt-expand-toggle"
+                                    type="button"
+                                    (click)="toggleCellExpansion(rowId, column.id); $event.stopPropagation()"
+                                    [attr.aria-label]="isCellExpanded(rowId, column.id) ? 'Collapse cell content' : 'Expand cell content'">
+                              {{ isCellExpanded(rowId, column.id) ? 'Less' : 'More' }}
+                            </button>
+                          } @else {
+                            <span class="ngt-cell-content" [class]="getCellOverflowClass(column)">
+                              {{ getCellValue(row, column) }}
+                            </span>
+                          }
                         }
                       </td>
                     }
@@ -338,7 +355,24 @@
                       } @else if (column.cellRenderer) {
                         <div [innerHTML]="column.cellRenderer(getCellValue(row, column), row, column)"></div>
                       } @else {
-                        <span>{{ getCellValue(row, column) }}</span>
+                        @if (column.overflow === 'expandable') {
+                          <span class="ngt-cell-content" 
+                                [class]="getCellOverflowClass(column)"
+                                [class.ngt-collapsed]="!isCellExpanded(rowId, column.id)"
+                                [class.ngt-expanded]="isCellExpanded(rowId, column.id)">
+                            {{ getCellValue(row, column) }}
+                          </span>
+                          <button class="ngt-expand-toggle"
+                                  type="button"
+                                  (click)="toggleCellExpansion(rowId, column.id); $event.stopPropagation()"
+                                  [attr.aria-label]="isCellExpanded(rowId, column.id) ? 'Collapse cell content' : 'Expand cell content'">
+                            {{ isCellExpanded(rowId, column.id) ? 'Less' : 'More' }}
+                          </button>
+                        } @else {
+                          <span class="ngt-cell-content" [class]="getCellOverflowClass(column)">
+                            {{ getCellValue(row, column) }}
+                          </span>
+                        }
                       }
                     </td>
                   }
@@ -399,7 +433,24 @@
                         } @else if (column.cellRenderer) {
                           <div [innerHTML]="column.cellRenderer(getCellValue(row, column), row, column)"></div>
                         } @else {
-                          <span>{{ getCellValue(row, column) }}</span>
+                          @if (column.overflow === 'expandable') {
+                            <span class="ngt-cell-content" 
+                                  [class]="getCellOverflowClass(column)"
+                                  [class.ngt-collapsed]="!isCellExpanded(rowId, column.id)"
+                                  [class.ngt-expanded]="isCellExpanded(rowId, column.id)">
+                              {{ getCellValue(row, column) }}
+                            </span>
+                            <button class="ngt-expand-toggle"
+                                    type="button"
+                                    (click)="toggleCellExpansion(rowId, column.id); $event.stopPropagation()"
+                                    [attr.aria-label]="isCellExpanded(rowId, column.id) ? 'Collapse cell content' : 'Expand cell content'">
+                              {{ isCellExpanded(rowId, column.id) ? 'Less' : 'More' }}
+                            </button>
+                          } @else {
+                            <span class="ngt-cell-content" [class]="getCellOverflowClass(column)">
+                              {{ getCellValue(row, column) }}
+                            </span>
+                          }
                         }
                       </td>
                     }

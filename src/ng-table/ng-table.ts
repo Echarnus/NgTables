@@ -80,6 +80,9 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   selectedRows = signal<RowSelectionState>({});
   hoveredRowId = signal<string | null>(null);
   
+  // State for expandable cell content
+  expandedCells = signal<{ [key: string]: boolean }>({});
+  
   // Pagination state
   private currentPage = signal<number>(1);
   private pageSize = signal<number>(25);
@@ -573,6 +576,37 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
 
   isRowHovered(rowId: string): boolean {
     return this.hoveredRowId() === rowId;
+  }
+
+  // Expandable cell management
+  getCellId(rowId: string, columnId: string): string {
+    return `${rowId}-${columnId}`;
+  }
+
+  isCellExpanded(rowId: string, columnId: string): boolean {
+    const cellId = this.getCellId(rowId, columnId);
+    return this.expandedCells()[cellId] || false;
+  }
+
+  toggleCellExpansion(rowId: string, columnId: string): void {
+    const cellId = this.getCellId(rowId, columnId);
+    const currentState = this.expandedCells();
+    this.expandedCells.set({
+      ...currentState,
+      [cellId]: !currentState[cellId]
+    });
+  }
+
+  getCellOverflowClass(column: ColumnDefinition<T>): string {
+    const overflow = column.overflow || 'ellipsis';
+    return `ngt-overflow-${overflow}`;
+  }
+
+  getCellExpandState(rowId: string, columnId: string): string {
+    if (this.isCellExpanded(rowId, columnId)) {
+      return 'ngt-expanded';
+    }
+    return 'ngt-collapsed';
   }
 
   getSortIcon(column: ColumnDefinition<T>): string {

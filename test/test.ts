@@ -14,4 +14,6 @@ getTestBed().initTestEnvironment(
 // Import all spec files
 import './ng-tables.spec';
 import './ng-table.spec';
+import './ng-table-paging.spec';
 import './pagination-fix.spec';
+import './column-overflow.spec';

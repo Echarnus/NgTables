@@ -15,6 +15,7 @@ interface User {
   joinDate: string;
   lastLogin: string;
   subscriptions: number;
+  bio: string; // Added for overflow strategy demonstration
 }
 
 @Component({
@@ -40,7 +41,8 @@ export class App {
         status: 'active',
         joinDate: '2023-01-15',
         lastLogin: '2024-09-16',
-        subscriptions: 5
+        subscriptions: 5,
+        bio: 'Experienced administrator with over 10 years in technology management. Specializes in enterprise software solutions and has led multiple digital transformation initiatives. Passionate about team development and process optimization.'
       },
       {
         id: 2,
@@ -52,7 +54,8 @@ export class App {
         status: 'active',
         joinDate: '2023-03-22',
         lastLogin: '2024-09-15',
-        subscriptions: 3
+        subscriptions: 3,
+        bio: 'Software engineer with expertise in web development and cloud technologies. Currently working on microservices architecture and DevOps practices to improve deployment efficiency.'
       },
       {
         id: 3,
@@ -64,7 +67,8 @@ export class App {
         status: 'inactive',
         joinDate: '2023-05-10',
         lastLogin: '2024-09-14',
-        subscriptions: 7
+        subscriptions: 7,
+        bio: 'Project manager with extensive experience in enterprise software deployment. Expert in agile methodologies and cross-functional team coordination. Currently focusing on digital transformation projects.'
       },
       {
         id: 4,
@@ -76,7 +80,8 @@ export class App {
         status: 'active',
         joinDate: '2023-04-03',
         lastLogin: '2024-09-13',
-        subscriptions: 12
+        subscriptions: 12,
+        bio: 'Full-stack developer specializing in React and Node.js. Passionate about creating user-friendly interfaces and optimizing application performance. Active in open source community.'
       },
       {
         id: 5,
@@ -88,12 +93,21 @@ export class App {
         status: 'active',
         joinDate: '2023-06-18',
         lastLogin: '2024-09-17',
-        subscriptions: 8
+        subscriptions: 8,
+        bio: 'Creative administrator with background in digital marketing and user experience design. Leads the UX/UI team and works closely with clients on brand identity projects.'
       }
     ];
     
     // Generate 200 users by duplicating and modifying the base users
     const allUsers: User[] = [];
+    const bioVariations = [
+      'A dedicated professional with extensive experience in the field.',
+      'Innovative problem solver focused on delivering excellent results for clients and stakeholders.',
+      'Detail-oriented team player with strong communication skills and technical expertise.',
+      'Results-driven expert passionate about continuous learning and professional development.',
+      'Collaborative leader with proven track record in project management and strategic planning.'
+    ];
+    
     for (let i = 0; i < 200; i++) {
       const baseUser = baseUsers[i % baseUsers.length];
       const iteration = Math.floor(i / baseUsers.length);
@@ -103,7 +117,8 @@ export class App {
         firstName: `${baseUser.firstName}${iteration > 0 ? iteration : ''}`,
         lastName: `${baseUser.lastName}${iteration > 0 ? iteration : ''}`,
         email: `${baseUser.firstName.toLowerCase()}${iteration > 0 ? iteration : ''}.${baseUser.lastName.toLowerCase()}${iteration > 0 ? iteration : ''}@${baseUser.company.toLowerCase().replace(/\s+/g, '')}.com`,
-        subscriptions: Math.floor(Math.random() * 20) + 1
+        subscriptions: Math.floor(Math.random() * 20) + 1,
+        bio: iteration === 0 ? baseUser.bio : bioVariations[i % bioVariations.length]
       });
     }
     
@@ -192,6 +207,36 @@ export class App {
       cellRenderer: (value: string) => {
         return new Date(value).toLocaleDateString();
       }
+    },
+    {
+      id: 'bio-ellipsis',
+      header: 'Bio (Ellipsis)',
+      accessor: 'bio',
+      width: '200px',
+      minWidth: '150px',
+      maxWidth: '300px',
+      overflow: 'ellipsis',
+      sortable: true
+    },
+    {
+      id: 'bio-multiline',
+      header: 'Bio (Multiline)',
+      accessor: 'bio',
+      width: '200px',
+      minWidth: '150px',
+      maxWidth: '300px',
+      overflow: 'multiline',
+      sortable: true
+    },
+    {
+      id: 'bio-expandable',
+      header: 'Bio (Expandable)',
+      accessor: 'bio',
+      width: '200px',
+      minWidth: '150px',
+      maxWidth: '300px',
+      overflow: 'expandable',
+      sortable: true
     },
     {
       id: 'subscriptions',
