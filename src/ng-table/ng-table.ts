@@ -51,10 +51,8 @@ import { NgTablePagingComponent } from '../ng-table-paging/ng-table-paging';
 })
 export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   @ViewChild('tableContainer', { static: true }) tableContainer!: ElementRef<HTMLDivElement>;
-  @ViewChild('headerContainer', { static: true }) headerContainer!: ElementRef<HTMLDivElement>;
-  @ViewChild('bodyContainer', { static: true }) bodyContainer!: ElementRef<HTMLDivElement>;
-  @ViewChild('scrollableHeader', { static: false }) scrollableHeader?: ElementRef<HTMLDivElement>;
-  @ViewChild('scrollableBody', { static: false }) scrollableBody?: ElementRef<HTMLDivElement>;
+  @ViewChild('headerContainer', { static: true }) headerContainer!: ElementRef<HTMLTableSectionElement>;
+  @ViewChild('tableWrapper', { static: true }) tableWrapper!: ElementRef<HTMLDivElement>;
 
   // Template content children for customization
   @ContentChild('expandedRowTemplate', { static: false }) expandedRowTemplate?: TemplateRef<ExpandableRowContext<T>>;
@@ -206,24 +204,16 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
       }
     });
     
-    // Sync scroll between header and body
-    effect(() => {
-      const container = this.bodyContainer?.nativeElement;
-      if (container) {
-        container.addEventListener('scroll', this.scrollSyncHandler);
-      }
-    });
-
-    // Sync header and body widths when data or columns change
+    // Update table layout when data or columns change
     effect(() => {
       // Track dependencies: data, columns, and configuration
       this.data();
       this.columns();
       this.config();
       
-      // Schedule width synchronization after DOM updates
+      // Schedule layout update after DOM updates
       requestAnimationFrame(() => {
-        this.updateColumnWidths();
+        this.updateTableLayout();
       });
     });
   }
@@ -231,25 +221,21 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.setupResizeObserver();
     
-    // Initial width synchronization with multiple attempts to ensure it works
-    setTimeout(() => this.updateColumnWidths(), 0);
-    setTimeout(() => this.updateColumnWidths(), 100);
-    setTimeout(() => this.updateColumnWidths(), 250);
-    setTimeout(() => this.updateColumnWidths(), 500);
+    // Initial layout update with multiple attempts to ensure it works
+    setTimeout(() => this.updateTableLayout(), 0);
+    setTimeout(() => this.updateTableLayout(), 100);
+    setTimeout(() => this.updateTableLayout(), 250);
+    setTimeout(() => this.updateTableLayout(), 500);
   }
 
   ngOnDestroy(): void {
     this.resizeObserver?.disconnect();
-    const container = this.bodyContainer?.nativeElement;
-    if (container) {
-      container.removeEventListener('scroll', this.scrollSyncHandler);
-    }
   }
 
   private setupResizeObserver(): void {
     if (typeof ResizeObserver !== 'undefined') {
       this.resizeObserver = new ResizeObserver(() => {
-        this.updateColumnWidths();
+        this.updateTableLayout();
       });
       
       if (this.tableContainer?.nativeElement) {
@@ -259,114 +245,43 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   }
 
   /**
-   * Public method to force header-body width synchronization
+   * Public method to force table layout refresh
    * Useful when external factors affect table dimensions
    */
   refreshLayout(): void {
-    // Force immediate and repeated width updates
-    this.updateColumnWidths();
+    // Force immediate and repeated layout updates
+    this.updateTableLayout();
     requestAnimationFrame(() => {
-      this.updateColumnWidths();
+      this.updateTableLayout();
     });
     setTimeout(() => {
-      this.updateColumnWidths();
+      this.updateTableLayout();
     }, 100);
   }
 
   syncHorizontalScroll(event: Event): void {
+    // With single table, just update frozen column positions
     const target = event.target as HTMLElement;
     const scrollLeft = target.scrollLeft;
-    
-    // Sync the scrollable header if this event came from the body
-    if (this.scrollableHeader?.nativeElement && target !== this.scrollableHeader.nativeElement) {
-      this.scrollableHeader.nativeElement.scrollLeft = scrollLeft;
-    }
-    
-    // Sync the scrollable body if this event came from the header
-    if (this.scrollableBody?.nativeElement && target !== this.scrollableBody.nativeElement) {
-      this.scrollableBody.nativeElement.scrollLeft = scrollLeft;
-    }
     
     // Update frozen column positions if needed
     this.updateFrozenColumnPositions(scrollLeft);
   }
 
-  private updateColumnWidths(): void {
-    // Update column widths for responsive behavior
+  private updateTableLayout(): void {
+    // Simple layout update for single table structure
     const container = this.tableContainer?.nativeElement;
-    if (!container) return;
+    const tableWrapper = this.tableWrapper?.nativeElement;
     
+    if (!container || !tableWrapper) return;
+    
+    // Calculate if horizontal scroll is needed
     const containerWidth = container.clientWidth;
-    
-    // Calculate total required width for all columns
     const totalRequiredWidth = this.calculateTotalTableWidth();
-    
-    // Calculate available width for scrollable content (excluding frozen columns)
-    const leftFrozenWidth = this.leftFrozenWidth();
-    const rightFrozenWidth = this.rightFrozenWidth();
-    const scrollableAreaWidth = containerWidth - leftFrozenWidth - rightFrozenWidth;
-    const scrollableContentWidth = this.calculateScrollableContentWidth();
-    
-    // Determine if horizontal scrolling is needed
     const needsHorizontalScroll = totalRequiredWidth > containerWidth;
     
-    // Enable/disable horizontal scrolling on the appropriate elements
-    this.updateScrollableSectons(needsHorizontalScroll, scrollableContentWidth);
-    
-    // Sync header and body widths with multiple attempts for robustness
-    this.syncHeaderBodyWidths();
-    setTimeout(() => this.syncHeaderBodyWidths(), 10);
-    setTimeout(() => this.syncHeaderBodyWidths(), 50);
-    setTimeout(() => this.syncHeaderBodyWidths(), 100);
-  }
-
-  private calculateScrollableContentWidth(): number {
-    let scrollableWidth = 0;
-    
-    // Add all scrollable column widths
-    this.scrollableColumns().forEach(column => {
-      const width = column.width ? parseInt(column.width.replace('px', '')) : 120;
-      scrollableWidth += width;
-    });
-    
-    return scrollableWidth;
-  }
-
-  private updateScrollableSectons(needsScroll: boolean, scrollableContentWidth: number): void {
-    // Update scrollable header section
-    const scrollableHeader = this.scrollableHeader?.nativeElement;
-    if (scrollableHeader) {
-      scrollableHeader.style.overflowX = needsScroll ? 'auto' : 'hidden';
-      
-      // Ensure the header table can expand to accommodate content
-      const headerTable = scrollableHeader.querySelector('.ngt-header-table') as HTMLElement;
-      if (headerTable && needsScroll) {
-        headerTable.style.minWidth = `${scrollableContentWidth}px`;
-      } else if (headerTable) {
-        headerTable.style.minWidth = '';
-      }
-    }
-    
-    // Update scrollable body section
-    const scrollableBody = this.scrollableBody?.nativeElement;
-    if (scrollableBody) {
-      scrollableBody.style.overflowX = needsScroll ? 'auto' : 'hidden';
-      
-      // Ensure the body table can expand to accommodate content
-      const bodyTable = scrollableBody.querySelector('.ngt-body-table') as HTMLElement;
-      if (bodyTable && needsScroll) {
-        bodyTable.style.minWidth = `${scrollableContentWidth}px`;
-      } else if (bodyTable) {
-        bodyTable.style.minWidth = '';
-      }
-    }
-    
-    // Ensure the main body container doesn't have conflicting overflow settings
-    const bodyContainer = this.bodyContainer?.nativeElement;
-    if (bodyContainer) {
-      // Remove any container-level horizontal scrolling to avoid double scrollbars
-      bodyContainer.style.overflowX = 'hidden';
-    }
+    // Update table wrapper scroll behavior
+    tableWrapper.style.overflowX = needsHorizontalScroll ? 'auto' : 'hidden';
   }
 
   private calculateTotalTableWidth(): number {
@@ -391,87 +306,9 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
     return totalWidth;
   }
 
-  private syncHeaderBodyWidths(): void {
-    // Ensure header and body have exact same column widths
-    const container = this.tableContainer?.nativeElement;
-    if (!container) return;
-
-    // Force immediate layout calculation
-    requestAnimationFrame(() => {
-      this.doWidthSync(container);
-    });
-  }
-
-  private doWidthSync(container: HTMLElement): void {
-    // Get all sections and sync them
-    this.syncSection(container, 'ngt-frozen-left');
-    this.syncSection(container, 'ngt-scrollable');  
-    this.syncSection(container, 'ngt-frozen-right');
-  }
-
-  private syncSection(container: HTMLElement, sectionClass: string): void {
-    const headerSection = container.querySelector(`.ngt-header-section.${sectionClass}`);
-    
-    // Update to look for the new body section structure
-    const bodySection = container.querySelector(`.ngt-body-section.${sectionClass}`) ||
-                       container.querySelector(`.ngt-row-section.${sectionClass}`); // Fallback for legacy
-    
-    if (!headerSection || !bodySection) return;
-
-    // Get header and body cells
-    const headerCells = Array.from(headerSection.querySelectorAll('.ngt-header-cell')) as HTMLElement[];
-    
-    // For table-based structure, look in the first tbody row
-    const firstBodyTable = bodySection.querySelector('.ngt-body-table');
-    const firstBodyRow = firstBodyTable?.querySelector('tbody tr.ngt-row') ||
-                        bodySection.querySelector('.ngt-row'); // Fallback for legacy div-based
-    const bodyCells = Array.from(firstBodyRow?.querySelectorAll('.ngt-cell') || []) as HTMLElement[];
-
-    if (headerCells.length === 0 || bodyCells.length === 0 || headerCells.length !== bodyCells.length) {
-      return;
-    }
-
-    // Clear any existing width constraints first
-    headerCells.forEach(cell => {
-      cell.style.width = '';
-      cell.style.minWidth = '';
-      cell.style.maxWidth = '';
-    });
-
-    // Force layout recalculation
-    container.offsetHeight;
-
-    // Now measure and apply widths
-    const widths: number[] = [];
-    bodyCells.forEach((bodyCell, index) => {
-      const rect = bodyCell.getBoundingClientRect();
-      widths[index] = rect.width;
-    });
-
-    // Apply widths to header cells
-    headerCells.forEach((headerCell, index) => {
-      if (widths[index] && widths[index] > 0) {
-        const width = Math.floor(widths[index]);
-        headerCell.style.width = `${width}px`;
-        headerCell.style.minWidth = `${width}px`;
-        headerCell.style.maxWidth = `${width}px`;
-      }
-    });
-
-    // Ensure table uses fixed layout
-    const headerTable = headerSection.querySelector('.ngt-header-table') as HTMLElement;
-    if (headerTable) {
-      headerTable.style.tableLayout = 'fixed';
-      headerTable.style.width = '100%';
-    }
-  }
-
   private updateFrozenColumnPositions(scrollLeft: number): void {
-    // Update right frozen columns position based on scroll
-    const rightFrozenElements = this.tableContainer?.nativeElement?.querySelectorAll('.ngt-frozen-right');
-    rightFrozenElements?.forEach((element) => {
-      (element as HTMLElement).style.transform = `translateX(-${scrollLeft}px)`;
-    });
+    // With sticky positioning, we don't need to manually update frozen column positions
+    // The browser handles this automatically with sticky positioning
   }
 
   onSort(column: ColumnDefinition<T>): void {
@@ -623,6 +460,22 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
       index: index,
       rowId: rowId
     };
+  }
+
+  getTotalColumnCount(): number {
+    let count = this.columns().length;
+    
+    // Add selection column if multi-select is enabled
+    if (this.config().selectable && this.config().multiSelect) {
+      count++;
+    }
+    
+    // Add expand column if expandable rows are enabled
+    if (this.config().expandableRows) {
+      count++;
+    }
+    
+    return count;
   }
 
   getLeftFrozenColumnCount(): number {
