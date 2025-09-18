@@ -301,18 +301,72 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
     // Calculate total required width for all columns
     const totalRequiredWidth = this.calculateTotalTableWidth();
     
-    // If container is smaller than required width, enable horizontal scrolling
-    if (totalRequiredWidth > containerWidth) {
-      container.style.overflowX = 'auto';
-    } else {
-      container.style.overflowX = 'hidden';
-    }
+    // Calculate available width for scrollable content (excluding frozen columns)
+    const leftFrozenWidth = this.leftFrozenWidth();
+    const rightFrozenWidth = this.rightFrozenWidth();
+    const scrollableAreaWidth = containerWidth - leftFrozenWidth - rightFrozenWidth;
+    const scrollableContentWidth = this.calculateScrollableContentWidth();
+    
+    // Determine if horizontal scrolling is needed
+    const needsHorizontalScroll = totalRequiredWidth > containerWidth;
+    
+    // Enable/disable horizontal scrolling on the appropriate elements
+    this.updateScrollableSectons(needsHorizontalScroll, scrollableContentWidth);
     
     // Sync header and body widths with multiple attempts for robustness
     this.syncHeaderBodyWidths();
     setTimeout(() => this.syncHeaderBodyWidths(), 10);
     setTimeout(() => this.syncHeaderBodyWidths(), 50);
     setTimeout(() => this.syncHeaderBodyWidths(), 100);
+  }
+
+  private calculateScrollableContentWidth(): number {
+    let scrollableWidth = 0;
+    
+    // Add all scrollable column widths
+    this.scrollableColumns().forEach(column => {
+      const width = column.width ? parseInt(column.width.replace('px', '')) : 120;
+      scrollableWidth += width;
+    });
+    
+    return scrollableWidth;
+  }
+
+  private updateScrollableSectons(needsScroll: boolean, scrollableContentWidth: number): void {
+    // Update scrollable header section
+    const scrollableHeader = this.scrollableHeader?.nativeElement;
+    if (scrollableHeader) {
+      scrollableHeader.style.overflowX = needsScroll ? 'auto' : 'hidden';
+      
+      // Ensure the header table can expand to accommodate content
+      const headerTable = scrollableHeader.querySelector('.ngt-header-table') as HTMLElement;
+      if (headerTable && needsScroll) {
+        headerTable.style.minWidth = `${scrollableContentWidth}px`;
+      } else if (headerTable) {
+        headerTable.style.minWidth = '';
+      }
+    }
+    
+    // Update scrollable body section
+    const scrollableBody = this.scrollableBody?.nativeElement;
+    if (scrollableBody) {
+      scrollableBody.style.overflowX = needsScroll ? 'auto' : 'hidden';
+      
+      // Ensure the body table can expand to accommodate content
+      const bodyTable = scrollableBody.querySelector('.ngt-body-table') as HTMLElement;
+      if (bodyTable && needsScroll) {
+        bodyTable.style.minWidth = `${scrollableContentWidth}px`;
+      } else if (bodyTable) {
+        bodyTable.style.minWidth = '';
+      }
+    }
+    
+    // Ensure the main body container doesn't have conflicting overflow settings
+    const bodyContainer = this.bodyContainer?.nativeElement;
+    if (bodyContainer) {
+      // Remove any container-level horizontal scrolling to avoid double scrollbars
+      bodyContainer.style.overflowX = 'hidden';
+    }
   }
 
   private calculateTotalTableWidth(): number {
