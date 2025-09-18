@@ -287,11 +287,9 @@ export class App {
     if (this.isDarkTheme()) {
       htmlElement.setAttribute('data-theme', 'dark');
       htmlElement.classList.add('ngt-theme-dark');
-      htmlElement.classList.add('demo-theme-dark');
     } else {
       htmlElement.removeAttribute('data-theme');
       htmlElement.classList.remove('ngt-theme-dark');
-      htmlElement.classList.remove('demo-theme-dark');
     }
   }
 
