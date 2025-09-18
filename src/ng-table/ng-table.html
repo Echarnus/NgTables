@@ -192,6 +192,16 @@
       </tbody>
     </table>
   </div>
+
+  <!-- Pagination Component -->
+  @if (isPaginationEnabled()) {
+    <ngt-table-paging
+      [pagination]="paginationState()"
+      [config]="config().pagination || {}"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)">
+    </ngt-table-paging>
+  }
 </div>
 
 <!-- Screen Reader Only Content -->
