@@ -54,7 +54,8 @@
   --demo-footer-border: #e1e5e9;
 }
 
-.demo-theme-dark {
+.demo-theme-dark,
+[data-theme='dark'] {
   --demo-bg: #1a1a1a;
   --demo-text: #ffffff;
   --demo-text-muted: #b0b0b0;

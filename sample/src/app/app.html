@@ -91,6 +91,13 @@
                    (change)="toggleRowTemplate()">
             <span>Use Template-based Rows (NEW!)</span>
           </label>
+          
+          <label class="control-item">
+            <input type="checkbox" 
+                   [checked]="isDarkTheme()"
+                   (change)="toggleTheme()">
+            <span>🌙 Dark Theme</span>
+          </label>
         </div>
       </div>
       
