@@ -28,7 +28,10 @@ import {
   RowSelectionState,
   TableEvents,
   ExpandableRowContext,
-  ColumnTemplateContext
+  ColumnTemplateContext,
+  PaginationState,
+  PageChangeEvent,
+  PageSizeChangeEvent
 } from '../types/table.types';
 import { 
   getNestedProperty, 
@@ -37,13 +40,14 @@ import {
   debounce,
   calculateFrozenWidth 
 } from '../utils/table.utils';
+import { NgTablePagingComponent } from '../ng-table-paging/ng-table-paging';
 
 @Component({
   selector: 'ngt-table',
   templateUrl: './ng-table.html',
   styleUrl: './ng-table.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule]
+  imports: [CommonModule, NgTablePagingComponent]
 })
 export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   @ViewChild('tableContainer', { static: true }) tableContainer!: ElementRef<HTMLDivElement>;
@@ -67,6 +71,8 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   selectionChange = output<{ selectedRows: string[]; allSelected: boolean }>();
   cellClick = output<{ value: any; row: T; column: ColumnDefinition<T> }>();
   rowClick = output<{ row: T; rowId: string }>();
+  pageChange = output<PageChangeEvent>();
+  pageSizeChange = output<PageSizeChangeEvent>();
 
   // Internal state using signals
   sortState = signal<SortState | null>(null);
@@ -74,7 +80,35 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   selectedRows = signal<RowSelectionState>({});
   hoveredRowId = signal<string | null>(null);
   
+  // Pagination state
+  private currentPage = signal<number>(1);
+  private pageSize = signal<number>(25);
+  
   // Computed properties
+  paginationState = computed((): PaginationState => {
+    const totalItems = this.data().length;
+    const size = this.pageSize();
+    const current = this.currentPage();
+    const totalPages = Math.max(1, Math.ceil(totalItems / size));
+    
+    // Ensure current page is within bounds
+    const validPage = Math.max(1, Math.min(current, totalPages));
+    if (validPage !== current) {
+      this.currentPage.set(validPage);
+    }
+    
+    return {
+      currentPage: validPage,
+      pageSize: size,
+      totalItems,
+      totalPages
+    };
+  });
+  
+  isPaginationEnabled = computed(() => 
+    this.config().pagination?.enabled === true
+  );
+  
   sortedData = computed(() => {
     const currentSort = this.sortState();
     const rawData = this.data();
@@ -96,6 +130,21 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
       
       return defaultSort(aValue, bValue, currentSort.direction);
     });
+  });
+  
+  // Paginated data - shows only the current page
+  paginatedData = computed(() => {
+    const sorted = this.sortedData();
+    
+    if (!this.isPaginationEnabled()) {
+      return sorted;
+    }
+    
+    const pagination = this.paginationState();
+    const startIndex = (pagination.currentPage - 1) * pagination.pageSize;
+    const endIndex = startIndex + pagination.pageSize;
+    
+    return sorted.slice(startIndex, endIndex);
   });
 
   leftFrozenColumns = computed(() => 
@@ -147,6 +196,15 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   private resizeObserver?: ResizeObserver;
 
   constructor() {
+    // Initialize pagination settings from config
+    effect(() => {
+      const config = this.config();
+      if (config.pagination?.pageSize && config.pagination.pageSize !== this.pageSize()) {
+        this.pageSize.set(config.pagination.pageSize);
+        this.currentPage.set(1); // Reset to first page when page size changes
+      }
+    });
+    
     // Sync scroll between header and body
     effect(() => {
       const container = this.bodyContainer?.nativeElement;
@@ -503,5 +561,17 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
       index: index,
       rowId: rowId
     };
+  }
+
+  // Pagination event handlers
+  onPageChange(event: PageChangeEvent): void {
+    this.currentPage.set(event.page);
+    this.pageChange.emit(event);
+  }
+
+  onPageSizeChange(event: PageSizeChangeEvent): void {
+    this.pageSize.set(event.pageSize);
+    this.currentPage.set(event.page);
+    this.pageSizeChange.emit(event);
   }
 }

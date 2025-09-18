@@ -1,0 +1,99 @@
+<div class="ngt-pagination" 
+     role="navigation" 
+     aria-label="Table pagination"
+     [attr.aria-describedby]="'pagination-info-' + currentPage()">
+
+  <!-- Page Size Selector -->
+  @if (mergedConfig().showPageSizeSelector && mergedConfig().pageSizeOptions.length > 1) {
+    <div class="ngt-pagination-page-size">
+      <label for="page-size-select" class="ngt-pagination-label">
+        Items per page:
+      </label>
+      <select id="page-size-select" 
+              class="ngt-pagination-select"
+              [value]="pageSize()"
+              (change)="onPageSizeSelectChange($event)"
+              [attr.aria-label]="'Change items per page, currently ' + pageSize()">
+        @for (option of mergedConfig().pageSizeOptions; track option) {
+          <option [value]="option">{{ option }}</option>
+        }
+      </select>
+    </div>
+  }
+
+  <!-- Pagination Info -->
+  <div class="ngt-pagination-info" 
+       [id]="'pagination-info-' + currentPage()"
+       role="status"
+       aria-live="polite">
+    @if (totalItems() > 0) {
+      {{ startItem() }}–{{ endItem() }} of {{ totalItems() }} items
+    } @else {
+      No items
+    }
+  </div>
+
+  <!-- Navigation Controls -->
+  @if (totalPages() > 1) {
+    <div class="ngt-pagination-controls" role="group" aria-label="Pagination controls">
+      
+      <!-- First Page Button -->
+      @if (mergedConfig().showFirstLastButtons) {
+        <button type="button"
+                class="ngt-pagination-button ngt-pagination-first"
+                [disabled]="!canGoPrevious()"
+                (click)="goToFirstPage()"
+                [attr.aria-label]="'Go to first page'"
+                title="First page">
+          <span aria-hidden="true">⟨⟨</span>
+        </button>
+      }
+
+      <!-- Previous Page Button -->
+      <button type="button"
+              class="ngt-pagination-button ngt-pagination-previous"
+              [disabled]="!canGoPrevious()"
+              (click)="goToPreviousPage()"
+              [attr.aria-label]="'Go to previous page'"
+              title="Previous page">
+        <span aria-hidden="true">⟨</span>
+      </button>
+
+      <!-- Page Number Buttons -->
+      @if (mergedConfig().showPageNumbers) {
+        @for (pageNum of visiblePageNumbers(); track trackByPageNumber($index, pageNum)) {
+          <button type="button"
+                  class="ngt-pagination-button ngt-pagination-page"
+                  [class.ngt-pagination-current]="pageNum === currentPage()"
+                  [attr.aria-current]="pageNum === currentPage() ? 'page' : null"
+                  [attr.aria-label]="'Go to page ' + pageNum + (pageNum === currentPage() ? ', current page' : '')"
+                  (click)="goToPage(pageNum)">
+            {{ pageNum }}
+          </button>
+        }
+      }
+
+      <!-- Next Page Button -->
+      <button type="button"
+              class="ngt-pagination-button ngt-pagination-next"
+              [disabled]="!canGoNext()"
+              (click)="goToNextPage()"
+              [attr.aria-label]="'Go to next page'"
+              title="Next page">
+        <span aria-hidden="true">⟩</span>
+      </button>
+
+      <!-- Last Page Button -->
+      @if (mergedConfig().showFirstLastButtons) {
+        <button type="button"
+                class="ngt-pagination-button ngt-pagination-last"
+                [disabled]="!canGoNext()"
+                (click)="goToLastPage()"
+                [attr.aria-label]="'Go to last page'"
+                title="Last page">
+          <span aria-hidden="true">⟩⟩</span>
+        </button>
+      }
+    </div>
+  }
+</div>

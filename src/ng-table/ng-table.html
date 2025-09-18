@@ -11,6 +11,16 @@
     </div>
   }
 
+  <!-- Top Pagination Controls -->
+  @if (isPaginationEnabled() && (config().pagination?.position === 'top' || config().pagination?.position === 'both')) {
+    <ngt-table-paging
+      [pagination]="paginationState()"
+      [config]="config().pagination || {}"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)">
+    </ngt-table-paging>
+  }
+
   <!-- Table Header (Sticky) -->
   <div class="ngt-header-container" 
        #headerContainer
@@ -191,15 +201,15 @@
        [class.ngt-horizontal-scroll]="config().horizontalScroll !== false">
     
     <!-- Empty State -->
-    @if (sortedData().length === 0 && !config().loading) {
+    @if (paginatedData().length === 0 && !config().loading) {
       <div class="ngt-empty-state" role="status">
         <p>{{ config().emptyMessage || 'No data available' }}</p>
       </div>
     }
 
     <!-- Data Rows -->
-    @if (sortedData().length > 0) {
-      @for (row of sortedData(); track trackByRowId($index, row); let rowIndex = $index) {
+    @if (paginatedData().length > 0) {
+      @for (row of paginatedData(); track trackByRowId($index, row); let rowIndex = $index) {
         @let rowId = getRowId(row, rowIndex);
         
         <!-- Main Row -->
@@ -375,6 +385,25 @@
     }
   </div>
 </div>
+
+<!-- Pagination Controls -->
+@if (isPaginationEnabled() && (config().pagination?.position === 'top' || config().pagination?.position === 'both')) {
+  <ngt-table-paging
+    [pagination]="paginationState()"
+    [config]="config().pagination || {}"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)">
+  </ngt-table-paging>
+}
+
+@if (isPaginationEnabled() && (!config().pagination?.position || config().pagination?.position === 'bottom' || config().pagination?.position === 'both')) {
+  <ngt-table-paging
+    [pagination]="paginationState()"
+    [config]="config().pagination || {}"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)">
+  </ngt-table-paging>
+}
 
 <!-- Screen Reader Only Content -->
 <div class="ngt-sr-only" aria-live="polite" aria-atomic="true">

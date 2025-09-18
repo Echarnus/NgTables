@@ -75,6 +75,8 @@ export interface TableConfiguration {
   loading?: boolean;
   /** Empty state message */
   emptyMessage?: string;
+  /** Pagination configuration */
+  pagination?: PaginationConfiguration;
 }
 
 export interface RowExpandState {
@@ -116,4 +118,54 @@ export interface ExpandableRowContext<T = any> {
   rowId: string;
   /** Whether the row is expanded */
   expanded: boolean;
+}
+
+export interface PaginationConfiguration {
+  /** Whether pagination is enabled */
+  enabled?: boolean;
+  /** Number of items per page */
+  pageSize?: number;
+  /** Available page size options */
+  pageSizeOptions?: number[];
+  /** Whether to show the page size selector */
+  showPageSizeSelector?: boolean;
+  /** Whether to show the first/last page buttons */
+  showFirstLastButtons?: boolean;
+  /** Whether to show page numbers */
+  showPageNumbers?: boolean;
+  /** Maximum number of page buttons to show */
+  maxPageButtons?: number;
+  /** Position of pagination controls */
+  position?: 'top' | 'bottom' | 'both';
+}
+
+export interface PaginationState {
+  /** Current page (1-based) */
+  currentPage: number;
+  /** Number of items per page */
+  pageSize: number;
+  /** Total number of items */
+  totalItems: number;
+  /** Total number of pages */
+  totalPages: number;
+}
+
+export interface PageChangeEvent {
+  /** New page number (1-based) */
+  page: number;
+  /** Current page size */
+  pageSize: number;
+  /** Total items */
+  totalItems: number;
+  /** Previous page number */
+  previousPage: number;
+}
+
+export interface PageSizeChangeEvent {
+  /** New page size */
+  pageSize: number;
+  /** Current page (may be adjusted) */
+  page: number;
+  /** Previous page size */
+  previousPageSize: number;
 }

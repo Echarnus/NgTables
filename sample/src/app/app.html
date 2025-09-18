@@ -25,7 +25,11 @@
         </div>
         <div class="feature-card">
           <h3>📱 Responsive</h3>
-          <p>Horizontal scrolling for narrow screens (25 rows demo data)</p>
+          <p>Horizontal scrolling for narrow screens (200 rows demo data)</p>
+        </div>
+        <div class="feature-card">
+          <h3>📄 Pagination</h3>
+          <p>75 items per page with configurable page sizes</p>
         </div>
         <div class="feature-card">
           <h3>♿ Accessible</h3>
@@ -99,7 +103,9 @@
           (rowExpand)="onRowExpand($event)"
           (selectionChange)="onSelectionChange($event)"
           (cellClick)="onCellClick($event)"
-          (rowClick)="onRowClick($event)">
+          (rowClick)="onRowClick($event)"
+          (pageChange)="onPageChange($event)"
+          (pageSizeChange)="onPageSizeChange($event)">
           
           <!-- Template-based expandable row content with access to row data -->
           <ng-template #expandedRowTemplate let-user let-index="index" let-rowId="rowId" let-expanded="expanded">
@@ -226,13 +232,16 @@
           <strong>Expand rows:</strong> Click the + button to show dynamic, template-based additional details
         </div>
         <div class="instruction-item">
+          <strong>Pagination:</strong> Navigate through 200 items with 75 per page - change page size in the dropdown (NEW!)
+        </div>
+        <div class="instruction-item">
           <strong>Template-based content:</strong> Expandable rows now use ng-template with full access to row data, index, and state
         </div>
         <div class="instruction-item">
           <strong>Template-based rows:</strong> Toggle "Use Template-based Rows" to see custom row rendering with templates (NEW!)
         </div>
         <div class="instruction-item">
-          <strong>Vertical scroll:</strong> Table now has 25 rows - scroll down to see all data
+          <strong>Data volume:</strong> Table now has 200 rows demonstrating performance with larger datasets
         </div>
         <div class="instruction-item">
           <strong>Horizontal scroll:</strong> Enable "Constrain Width" to see frozen columns in action
