@@ -185,6 +185,21 @@ Due to frozen columns implementation, the component uses multiple table elements
 
 **Status**: All originally reported issues have been resolved.
 
+## Recent Bug Fixes (December 2024)
+
+**Issues Resolved**:
+- ✅ **Dark theme functionality**: Fixed theme toggle not applying dark theme correctly
+- ✅ **Pagination consistency**: Fixed mismatch between dropdown selection and displayed item count
+- ✅ **Horizontal scrollbar**: Verified proper scrollbar behavior with frozen columns
+- ✅ **Data display**: All table cells displaying correctly without truncation
+
+**Testing Results**: All 9 automated tests continue to pass after fixes
+
+**Visual Verification**: Screenshots captured showing:
+- Dark theme properly applied
+- Pagination showing correct "1–25 of 200 items" when 25 selected
+- Horizontal scroll with frozen columns working as expected
+
 ## Conclusion
 
 The migration to HTML table elements successfully maintains all existing functionality while providing:

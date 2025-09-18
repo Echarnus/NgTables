@@ -112,13 +112,13 @@ This document outlines the requirements and specifications for refactoring NgTab
 ## Testing Requirements
 
 ### Functional Tests
-- [ ] Pagination works correctly with table structure
-- [ ] Sorting maintains state and updates aria-sort attributes  
-- [ ] Frozen columns remain fixed during horizontal scroll
-- [ ] Template-driven cells render properly in `<td>` elements
-- [ ] Sticky header behavior preserved
-- [ ] Horizontal scrollbar functions as expected
-- [ ] Text overflow options (ellipsis/multiline) work correctly
+- [x] Pagination works correctly with table structure
+- [x] Sorting maintains state and updates aria-sort attributes  
+- [x] Frozen columns remain fixed during horizontal scroll
+- [x] Template-driven cells render properly in `<td>` elements
+- [x] Sticky header behavior preserved
+- [x] Horizontal scrollbar functions as expected
+- [x] Text overflow options (ellipsis/multiline) work correctly
 
 ### Accessibility Tests
 - [ ] Screen reader navigation follows proper table semantics
@@ -128,9 +128,9 @@ This document outlines the requirements and specifications for refactoring NgTab
 - [ ] Expand/collapse functionality accessible
 
 ### Theme Tests  
-- [ ] Light theme displays correctly with table elements
-- [ ] Dark theme maintains proper contrast and styling
-- [ ] Theme switching preserves table layout
+- [x] Light theme displays correctly with table elements
+- [x] Dark theme maintains proper contrast and styling
+- [x] Theme switching preserves table layout
 - [ ] High contrast mode compatibility
 
 ### Browser Compatibility
