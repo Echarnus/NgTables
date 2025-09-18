@@ -1,9 +1,90 @@
-// Demo app styles
+// Demo app styles with dark theme support
+
+// CSS Custom Properties for theming
+:root {
+  // Light theme colors (default)
+  --demo-bg: #ffffff;
+  --demo-text: #333333;
+  --demo-text-muted: #666666;
+  --demo-primary: #007c89;
+  --demo-border: #e1e5e9;
+  --demo-card-bg: #f8f9fa;
+  --demo-card-border: #e1e5e9;
+  --demo-control-bg: #f8f9fa;
+  --demo-control-border: #e1e5e9;
+  --demo-button-bg: #e9ecef;
+  --demo-button-hover: #dee2e6;
+  --demo-footer-bg: #f8f9fa;
+  --demo-footer-border: #e1e5e9;
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  :root {
+    --demo-bg: #1a1a1a;
+    --demo-text: #ffffff;
+    --demo-text-muted: #b0b0b0;
+    --demo-primary: #5fb3c4;
+    --demo-border: #404040;
+    --demo-card-bg: #2a2a2a;
+    --demo-card-border: #404040;
+    --demo-control-bg: #2a2a2a;
+    --demo-control-border: #404040;
+    --demo-button-bg: #404040;
+    --demo-button-hover: #4a4a4a;
+    --demo-footer-bg: #2a2a2a;
+    --demo-footer-border: #404040;
+  }
+}
+
+// Tailwind CSS compatibility classes
+.demo-theme-light {
+  --demo-bg: #ffffff;
+  --demo-text: #333333;
+  --demo-text-muted: #666666;
+  --demo-primary: #007c89;
+  --demo-border: #e1e5e9;
+  --demo-card-bg: #f8f9fa;
+  --demo-card-border: #e1e5e9;
+  --demo-control-bg: #f8f9fa;
+  --demo-control-border: #e1e5e9;
+  --demo-button-bg: #e9ecef;
+  --demo-button-hover: #dee2e6;
+  --demo-footer-bg: #f8f9fa;
+  --demo-footer-border: #e1e5e9;
+}
+
+.demo-theme-dark {
+  --demo-bg: #1a1a1a;
+  --demo-text: #ffffff;
+  --demo-text-muted: #b0b0b0;
+  --demo-primary: #5fb3c4;
+  --demo-border: #404040;
+  --demo-card-bg: #2a2a2a;
+  --demo-card-border: #404040;
+  --demo-control-bg: #2a2a2a;
+  --demo-control-border: #404040;
+  --demo-button-bg: #404040;
+  --demo-button-hover: #4a4a4a;
+  --demo-footer-bg: #2a2a2a;
+  --demo-footer-border: #404040;
+}
+
+// Ensure body background is properly set
+body {
+  background-color: var(--demo-bg);
+  color: var(--demo-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 .demo-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--demo-bg);
+  color: var(--demo-text);
+  min-height: 100vh;
 }
 
 .demo-header {
@@ -11,14 +92,14 @@
   margin-bottom: 40px;
   
   h1 {
-    color: #007c89;
+    color: var(--demo-primary);
     font-size: 2.5rem;
     font-weight: 600;
     margin-bottom: 10px;
   }
   
   .demo-subtitle {
-    color: #666;
+    color: var(--demo-text-muted);
     font-size: 1.1rem;
     line-height: 1.6;
     max-width: 600px;
@@ -30,7 +111,7 @@
   margin-bottom: 40px;
   
   h2 {
-    color: #333;
+    color: var(--demo-text);
     margin-bottom: 20px;
     font-size: 1.8rem;
   }
@@ -44,21 +125,21 @@
 }
 
 .feature-card {
-  background: #f8f9fa;
-  border: 1px solid #e1e5e9;
+  background: var(--demo-card-bg);
+  border: 1px solid var(--demo-card-border);
   border-radius: 8px;
   padding: 20px;
   
   h3 {
     margin-top: 0;
     margin-bottom: 10px;
-    color: #333;
+    color: var(--demo-text);
     font-size: 1.1rem;
   }
   
   p {
     margin: 0;
-    color: #666;
+    color: var(--demo-text-muted);
     font-size: 0.95rem;
   }
 }
@@ -67,7 +148,7 @@
   margin-bottom: 40px;
   
   h2 {
-    color: #333;
+    color: var(--demo-text);
     margin-bottom: 20px;
     font-size: 1.8rem;
   }
@@ -76,14 +157,14 @@
 .demo-controls {
   margin-bottom: 30px;
   padding: 20px;
-  background: #f8f9fa;
-  border: 1px solid #e1e5e9;
+  background: var(--demo-control-bg);
+  border: 1px solid var(--demo-control-border);
   border-radius: 6px;
   
   h3 {
     margin-top: 0;
     margin-bottom: 15px;
-    color: #333;
+    color: var(--demo-text);
     font-size: 1.2rem;
   }
 }
@@ -113,7 +194,7 @@
   
   span {
     font-size: 0.95rem;
-    color: #333;
+    color: var(--demo-text);
   }
   
   &:has(input:disabled) {
@@ -121,7 +202,7 @@
     cursor: not-allowed;
     
     span {
-      color: #666;
+      color: var(--demo-text-muted);
     }
   }
 }
@@ -129,13 +210,13 @@
 .table-wrapper {
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--demo-border);
   margin-bottom: 20px;
   
   &.constrained-width {
     max-width: 800px;
     margin: 0 auto 20px;
-    border: 2px solid #007c89;
+    border: 2px solid var(--demo-primary);
     position: relative;
     
     &::before {
@@ -143,7 +224,7 @@
       position: absolute;
       top: -30px;
       left: 0;
-      background: #007c89;
+      background: var(--demo-primary);
       color: white;
       padding: 4px 8px;
       border-radius: 4px;
@@ -158,7 +239,7 @@
   margin-bottom: 40px;
   
   h2 {
-    color: #333;
+    color: var(--demo-text);
     margin-bottom: 20px;
     font-size: 1.8rem;
   }
@@ -171,24 +252,26 @@
 }
 
 .instruction-item {
-  background: #fff;
-  border: 1px solid #e1e5e9;
+  background: var(--demo-card-bg);
+  border: 1px solid var(--demo-card-border);
   border-radius: 6px;
   padding: 15px;
   
   strong {
-    color: #007c89;
+    color: var(--demo-primary);
   }
 }
 
 .demo-footer {
   text-align: center;
   padding: 20px 0;
-  border-top: 1px solid #e1e5e9;
-  color: #666;
+  border-top: 1px solid var(--demo-border);
+  color: var(--demo-text-muted);
+  background: var(--demo-footer-bg);
+  margin-top: 40px;
   
   a {
-    color: #007c89;
+    color: var(--demo-primary);
     text-decoration: none;
     
     &:hover {
@@ -197,7 +280,7 @@
   }
 }
 
-// Custom status badges for the table
+// Custom status badges for the table - with dark mode support
 :global(.status-badge) {
   padding: 4px 8px;
   border-radius: 12px;
@@ -208,35 +291,50 @@
   &.status-active {
     background: #d4edda;
     color: #155724;
+    
+    @media (prefers-color-scheme: dark) {
+      background: #0f5132;
+      color: #75b798;
+    }
   }
   
   &.status-pending {
     background: #fff3cd;
     color: #856404;
+    
+    @media (prefers-color-scheme: dark) {
+      background: #664d03;
+      color: #ffda6a;
+    }
   }
   
   &.status-inactive {
     background: #f8d7da;
     color: #721c24;
+    
+    @media (prefers-color-scheme: dark) {
+      background: #58151c;
+      color: #ea868f;
+    }
   }
 }
 
-// Expanded content styles
+// Expanded content styles with dark mode support
 :global(.expanded-content) {
   .expanded-header {
     margin-bottom: 20px;
     padding-bottom: 15px;
-    border-bottom: 2px solid #e9ecef;
+    border-bottom: 2px solid var(--demo-border);
     
     h4 {
       margin: 0 0 5px 0;
-      color: #333;
+      color: var(--demo-text);
       font-size: 1.2rem;
     }
     
     .row-info {
       font-size: 0.85rem;
-      color: #6c757d;
+      color: var(--demo-text-muted);
       font-style: italic;
     }
   }
@@ -248,14 +346,14 @@
   }
   
   .detail-section {
-    background: #f8f9fa;
+    background: var(--demo-card-bg);
     border-radius: 8px;
     padding: 15px;
-    border-left: 4px solid #007bff;
+    border-left: 4px solid var(--demo-primary);
     
     h5 {
       margin: 0 0 12px 0;
-      color: #495057;
+      color: var(--demo-text);
       font-size: 1rem;
       font-weight: 600;
     }
@@ -264,9 +362,10 @@
       margin-bottom: 8px;
       font-size: 0.9rem;
       line-height: 1.4;
+      color: var(--demo-text-muted);
       
       strong {
-        color: #333;
+        color: var(--demo-text);
         margin-right: 8px;
       }
       
@@ -325,11 +424,11 @@
       }
       
       &:not(.primary):not(.secondary) {
-        background: #e9ecef;
-        color: #333;
+        background: var(--demo-button-bg);
+        color: var(--demo-text);
         
         &:hover {
-          background: #dee2e6;
+          background: var(--demo-button-hover);
         }
       }
     }
@@ -362,7 +461,7 @@
   &.constrained-width {
     max-width: 600px;
     margin: 0 auto;
-    border: 2px solid #007c89;
+    border: 2px solid var(--demo-primary);
     border-radius: 8px;
     overflow: hidden;
     position: relative;
@@ -373,7 +472,7 @@
       top: -35px;
       left: 0;
       right: 0;
-      background: #007c89;
+      background: var(--demo-primary);
       color: white;
       text-align: center;
       padding: 8px;
@@ -391,27 +490,31 @@ ngt-table {
   width: 100%;
 }
 
-// Custom row template styles
+// Custom row template styles with dark mode support
 :global(.custom-row-template) {
-  background: white;
-  border: 1px solid #e1e5e9;
+  background: var(--demo-card-bg);
+  border: 1px solid var(--demo-card-border);
   border-radius: 8px;
   margin: 8px;
   padding: 16px;
   transition: all 0.2s ease;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--demo-border);
   
   &:hover, &.hovered {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px var(--demo-border);
     transform: translateY(-1px);
-    border-color: #007c89;
+    border-color: var(--demo-primary);
   }
   
   &.selected {
-    border-color: #007c89;
-    background: #f0fffe;
-    box-shadow: 0 0 0 2px rgba(0, 124, 137, 0.2);
+    border-color: var(--demo-primary);
+    background: var(--demo-card-bg);
+    box-shadow: 0 0 0 2px var(--demo-primary);
+    
+    @media (prefers-color-scheme: dark) {
+      background: rgba(95, 179, 196, 0.1);
+    }
   }
   
   .template-row-header {
@@ -420,7 +523,7 @@ ngt-table {
     gap: 12px;
     margin-bottom: 12px;
     padding-bottom: 8px;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid var(--demo-border);
     
     .row-number {
       background: #6c757d;
@@ -436,7 +539,7 @@ ngt-table {
     .user-name {
       font-weight: 600;
       font-size: 1.1rem;
-      color: #333;
+      color: var(--demo-text);
       flex-grow: 1;
     }
     
@@ -450,16 +553,31 @@ ngt-table {
       &.status-active {
         background: #d4edda;
         color: #155724;
+        
+        @media (prefers-color-scheme: dark) {
+          background: #0f5132;
+          color: #75b798;
+        }
       }
       
       &.status-pending {
         background: #fff3cd;
         color: #856404;
+        
+        @media (prefers-color-scheme: dark) {
+          background: #664d03;
+          color: #ffda6a;
+        }
       }
       
       &.status-inactive {
         background: #f8d7da;
         color: #721c24;
+        
+        @media (prefers-color-scheme: dark) {
+          background: #58151c;
+          color: #ea868f;
+        }
       }
     }
   }
@@ -502,16 +620,21 @@ ngt-table {
           
           .company {
             font-weight: 600;
-            color: #333;
+            color: var(--demo-text);
             font-size: 0.95rem;
           }
           
           .role {
-            color: #007c89;
+            color: var(--demo-primary);
             font-size: 0.9rem;
-            background: #e8f5f6;
+            background: var(--demo-card-bg);
             padding: 2px 6px;
             border-radius: 4px;
+            border: 1px solid var(--demo-border);
+            
+            @media (prefers-color-scheme: dark) {
+              background: rgba(95, 179, 196, 0.2);
+            }
           }
         }
         
@@ -522,7 +645,7 @@ ngt-table {
           
           .email, .subscriptions {
             font-size: 0.85rem;
-            color: #666;
+            color: var(--demo-text-muted);
           }
           
           .subscriptions {
@@ -539,25 +662,26 @@ ngt-table {
       
       .template-btn {
         padding: 6px 12px;
-        border: 1px solid #007c89;
-        background: white;
-        color: #007c89;
+        border: 1px solid var(--demo-primary);
+        background: var(--demo-card-bg);
+        color: var(--demo-primary);
         border-radius: 4px;
         font-size: 0.8rem;
         cursor: pointer;
         transition: all 0.2s ease;
         
         &:hover {
-          background: #007c89;
+          background: var(--demo-primary);
           color: white;
         }
         
         &:first-child {
-          background: #007c89;
+          background: var(--demo-primary);
           color: white;
           
           &:hover {
-            background: #005f66;
+            background: var(--demo-primary);
+            filter: brightness(0.9);
           }
         }
       }
@@ -565,7 +689,7 @@ ngt-table {
   }
 }
 
-// Column-based template styles
+// Column-based template styles with dark mode support
 :global(.user-name-cell) {
   display: flex;
   align-items: center;
@@ -591,13 +715,13 @@ ngt-table {
     
     .full-name {
       font-weight: 600;
-      color: #333;
+      color: var(--demo-text);
       font-size: 0.95rem;
     }
     
     .user-id {
       font-size: 0.75rem;
-      color: #6c757d;
+      color: var(--demo-text-muted);
       margin-top: 1px;
     }
   }
@@ -610,8 +734,9 @@ ngt-table {
   gap: 8px;
   
   .action-btn {
-    background: none;
-    border: 1px solid #dee2e6;
+    background: var(--demo-card-bg);
+    border: 1px solid var(--demo-border);
+    color: var(--demo-text);
     padding: 4px 6px;
     border-radius: 4px;
     font-size: 0.75rem;
@@ -619,8 +744,8 @@ ngt-table {
     transition: all 0.2s ease;
     
     &:hover {
-      background: #f8f9fa;
-      border-color: #adb5bd;
+      background: var(--demo-button-hover);
+      border-color: var(--demo-text-muted);
     }
     
     &:active {
