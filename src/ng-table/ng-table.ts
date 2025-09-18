@@ -197,12 +197,21 @@ export class NgTableComponent<T = any> implements OnInit, OnDestroy {
   private resizeObserver?: ResizeObserver;
 
   constructor() {
-    // Initialize pagination settings from config - only set initial page size if not set by user
+    // Initialize pagination settings from config - ensure initial page size is properly set
     effect(() => {
       const config = this.config();
-      if (config.pagination?.pageSize && !this.pageSizeSetByUser() && config.pagination.pageSize !== this.pageSize()) {
-        this.pageSize.set(config.pagination.pageSize);
-        this.currentPage.set(1); // Reset to first page when page size changes
+      // Only set from config if:
+      // 1. Config has a pageSize
+      // 2. User hasn't manually set a page size yet
+      // 3. The config pageSize is different from current pageSize
+      if (config.pagination?.pageSize && !this.pageSizeSetByUser()) {
+        // Always use the config pageSize for initial setup, but not for subsequent config changes
+        // unless the user hasn't made any manual changes
+        const configPageSize = config.pagination.pageSize;
+        if (configPageSize !== this.pageSize()) {
+          this.pageSize.set(configPageSize);
+          this.currentPage.set(1); // Reset to first page when page size changes
+        }
       }
     });
     

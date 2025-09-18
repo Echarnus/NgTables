@@ -305,16 +305,36 @@ $transition: all 0.15s ease-in-out;
   position: relative;
   
   &.ngt-horizontal-scroll {
-    // Remove container-level horizontal scrolling to prevent double scrollbars
-    // Horizontal scrolling is now handled at the section level
-    overflow-x: hidden;
+    // Move horizontal scrolling to the container level to create a single scrollbar
+    // that spans the entire table width
+    overflow-x: auto;
     overflow-y: visible;
+    
+    // Style the container-level scrollbar
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: var(--ngt-secondary-color, #f4f4f4);
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: var(--ngt-border-color, #e1e5e9);
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--ngt-text-muted, #86888a);
+    }
   }
 }
 
 // Table body wrapper for organizing frozen and scrollable sections
 .ngt-table-body-wrapper {
   display: flex;
+  // Set a min-width to ensure the horizontal scrollbar appears when content overflows
+  min-width: max-content;
 }
 
 // Body sections for frozen and scrollable content
@@ -338,25 +358,8 @@ $transition: all 0.15s ease-in-out;
   &.ngt-scrollable {
     flex: 1;
     min-width: 0;
-    overflow: hidden;
-    
-    // Ensure proper scrolling behavior when horizontal scroll is needed
-    &::-webkit-scrollbar {
-      height: 8px;
-    }
-    
-    &::-webkit-scrollbar-track {
-      background: var(--ngt-secondary-color, #f4f4f4);
-    }
-    
-    &::-webkit-scrollbar-thumb {
-      background: var(--ngt-border-color, #e1e5e9);
-      border-radius: 4px;
-    }
-    
-    &::-webkit-scrollbar-thumb:hover {
-      background: var(--ngt-text-muted, #86888a);
-    }
+    // Remove individual section scrolling since it's now handled at container level
+    overflow: visible;
   }
 }
 
