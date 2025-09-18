@@ -2,7 +2,7 @@
 
 A comprehensive Angular table component with advanced features including frozen columns, expandable rows, sorting, and full accessibility support.
 
-![NgTables Demo](docs/assets/mailchimp-table-demo.png)
+**[📖 View Live Demo](https://echarnus.github.io/NgTables/)**
 
 ## Features
 
@@ -99,16 +99,18 @@ export class UsersComponent {
 
 ## Live Demo
 
-Run the demo application to see all features in action:
+View the interactive demo at: [https://echarnus.github.io/NgTables/](https://echarnus.github.io/NgTables/)
+
+For local development:
 
 ```bash
 git clone https://github.com/Echarnus/NgTables.git
 cd NgTables
 npm install
-ng serve demo
+npm start
 ```
 
-Open http://localhost:4200 to view the interactive demo.
+Open http://localhost:4200 to view the local demo.
 
 ## Research: Dual `<thead>` Approach
 
@@ -127,14 +129,25 @@ During development, we investigated the use of two `<thead>` elements as seen in
 
 ## Documentation
 
-- [API Documentation](docs/api.md)
-- [Examples](docs/examples.md)
-- [Accessibility Guide](docs/accessibility.md)
-- [Migration Guide](docs/migration.md)
+For comprehensive documentation and examples, see the [live demo](https://echarnus.github.io/NgTables/) which includes:
+
+- Interactive examples of all features
+- Code samples and usage patterns  
+- Accessibility demonstrations
+- Performance optimizations
+- Migration guidance
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
+This project welcomes contributions! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Submit a pull request
+
+For development setup, clone the repository and run `npm install` followed by `npm start` to launch the demo application.
 
 ## License
 
